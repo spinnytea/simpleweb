@@ -1,3 +1,59 @@
+@import 'css-variables/red.css';
+
+* {
+	margin: 0;
+	padding: 0;
+}
 body {
+	--fontHeight: 10px;
+	--valueFontHeight: calc(3 * var(--fontHeight));
+	--cellSize: calc(4 * var(--fontHeight));
+
 	background-color: var(--textPrimaryColor);
+	color: var(--primaryColor); /* start with this color by default, we can change it as we find it */
+	font-size: var(--fontHeight);
+	font-family: sans-serif;
+}
+h1, h2, h3, h3, h4, h5, h6 {
+	font-weight: lighter;
+}
+
+
+table#board {
+	border-spacing: 0;
+	border-collapse: collapse;
+}
+table#board td {
+	border-width: 1px;
+	border-style: solid;
+	border-color: var(--primaryColor);
+	width: var(--cellSize);
+	height: var(--cellSize);
+}
+#board .none {
+	background-color: var(--dividerColor);
+	width: 100%;
+	height: 100%;
+}
+#board .cell {
+	font-size: var(--valueFontHeight);
+	display: grid;
+	grid-template-columns: auto;
+	justify-content: center;
+	font-weight: lighter;
+}
+#board .cell.impossible {
+	color: var(--accentColor);
+}
+#board .cell-possible {
+	color: var(--secondaryTextColor);
+	display: grid;
+	grid-template-columns: auto auto auto;
+	grid-gap: 0;
+	justify-content: space-evenly;
+}
+
+#board td.focus,
+#board td.focus .none {
+	background-color: var(--lightPrimaryColor);
 }

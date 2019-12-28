@@ -12,11 +12,27 @@
 		integrity="sha256-23hi0Ag650tclABdGCdMNSjxvikytyQ44vYGo9HyOrU="
 		crossorigin="anonymous"></script>
 
-	<link href="css-variables/red.css" rel="stylesheet">
 	<link href="kakuro.css" rel="stylesheet">
 	<script src="kakuro.js"></script>
 </head>
-<body ng-app="kakuro" ng-controller="kakuro.body.controller as body">
-	<span ng-bind="body.message"></span>
+<body ng-app="kakuro" ng-controller="kakuro.body.controller as body" ng-keydown="body.handleKeys($event)">
+	<h1>Kakuro</h1>
+
+	<div id="board-wrapper">
+		<table id="board">
+			<tr data-ng-repeat="row in body.board">
+				<td data-ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }">
+					<div ng-if="cell.type === 'none'" class="none"></div>
+					<div ng-if="cell.type === 'empty'" class="empty"></div>
+					<div ng-if="cell.type === 'cell'">
+						<div ng-if="!cell.value" class="cell-possible">
+							<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>
+						</div>
+						<div ng-if="!!cell.value" class="cell" ng-class="{ 'impossible': !cell.possible[cell.value] }" ng-bind="cell.value"></div>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
 </body>
 </html>
