@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Kakuro</title>
+
+	<script
+		src="https://code.jquery.com/jquery-3.4.1.min.js"
+		integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"
+		integrity="sha256-23hi0Ag650tclABdGCdMNSjxvikytyQ44vYGo9HyOrU="
+		crossorigin="anonymous"></script>
+
+	<link href="css-variables/red.css" rel="stylesheet">
+	<link href="kakuro.css" rel="stylesheet">
+	<script src="kakuro.js"></script>
+</head>
+<body ng-app="kakuro" ng-controller="kakuro.body.controller as body">
+	<span ng-bind="body.message"></span>
+</body>
+</html>
