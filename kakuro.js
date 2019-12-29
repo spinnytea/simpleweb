@@ -1,4 +1,7 @@
 (function() {
+	const MIN_ROW = 1+2;
+	const MAX_ROW = 1+2+3+4+5+6+7+8+9;
+
 	const module = angular.module('kakuro', []);
 	module.controller('kakuro.body.controller', [
 		function SimpleWebBodyController() {
@@ -7,6 +10,15 @@
 
 			// TODO some kind of save/load system
 			const board = body.board = makeBoard(3, 3);
+			board[1][0].type = 'empty';
+			board[1][0].right = 11;
+			board[2][0].type = 'empty';
+			board[2][0].right = 4;
+			board[0][1].type = 'empty';
+			board[0][1].down = 12;
+			board[0][2].type = 'empty';
+			board[0][2].down = 3;
+
 			board[1][1].type = 'cell';
 			board[1][1].value = 9;
 			board[1][2].type = 'cell';
@@ -127,11 +139,25 @@
 
 	/**
 	 * during setup, mark a cell as empty
+	 *
+	 * XXX think of a better way to get the input than a prompt
 	 */
 	function setEmpty(cell) {
 		cell.type = 'empty';
-		// modal to get left and right
-		// TODO do something better than a modal
+
+		let val = +prompt('Sum across the row to the right.', cell.right || '');
+		if(!isNaN(val) && MIN_ROW <= val && val <= MAX_ROW) {
+			cell.right = +val;
+		} else {
+			cell.right = null;
+		}
+
+		val = +prompt('Sum down the col below.', cell.down || '');
+		if(!isNaN(val) && MIN_ROW <= val && val <= MAX_ROW) {
+			cell.down = +val;
+		} else {
+			cell.down = null;
+		}
 	}
 	/**
 	 * mark a cell as one that should have a value
@@ -145,8 +171,10 @@
 	 * give a specific value to a cell
 	 */
 	function setCellValue(cell, value) {
-		cell.value = value;
-		validateCell(cell);
+		if(cell.type === 'cell') {
+			cell.value = value;
+			validateCell(cell);
+		}
 	}
 
 	function validateCell(cell) {

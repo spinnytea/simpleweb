@@ -23,13 +23,16 @@
 			<tr data-ng-repeat="row in body.board">
 				<td data-ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }">
 					<div ng-if="cell.type === 'none'" class="none"></div>
-					<div ng-if="cell.type === 'empty'" class="empty"></div>
-					<div ng-if="cell.type === 'cell'">
-						<div ng-if="!cell.value" class="cell-possible">
-							<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>
-						</div>
-						<div ng-if="!!cell.value" class="cell" ng-class="{ 'invalid': cell.errors['value-impossible'] }" ng-bind="cell.value"></div>
+					<div ng-if="cell.type === 'empty'" class="empty">
+						<div class="right" ng-bind="cell.right"></div>
+						<div class="down" ng-bind="cell.down"></div>
 					</div>
+					<div ng-if="cell.type === 'cell' && !cell.value" class="cell-possible">
+						<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>
+					</div>
+					<div ng-if="cell.type === 'cell' && !!cell.value" class="cell"
+						ng-class="{ 'invalid': cell.errors['value-impossible'] }"
+						ng-bind="cell.value"></div>
 				</td>
 			</tr>
 		</table>
