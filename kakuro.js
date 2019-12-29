@@ -13,6 +13,9 @@
 			calcStats(board);
 			validateBoard(board);
 
+			// TODO reset, run again
+			heuristic_lengthAndSum(board);
+
 			const focus = body.focus = {
 				x: 0,
 				y: 0,
@@ -142,6 +145,20 @@
 			errors: {},
 		};
 	}
+	function forEachBoard(board, callback) {
+		board.forEach(function(row) {
+			row.forEach(function(cell) {
+				callback(cell);
+			});
+		});
+	}
+	function forEachCell(cell, dir, callback) {
+		let next = cell[dir];
+		while(next && next.type === 'cell') {
+			callback(next);
+			next = next[dir];
+		}
+	}
 
 	/**
 	 * during setup, mark a cell as empty
@@ -188,37 +205,90 @@
 			noneCount: 0,
 		};
 
-		board.forEach(function(row) {
-			row.forEach(function(cell) {
-				if(cell.type === 'none') board.stats.noneCount++;
-				if(cell.type === 'empty') {
-					cell.rightLength = 0;
-					if(!!cell.right) {
-						let next = cell.$right;
-						while(next && next.type === 'cell') {
-							cell.rightLength++;
-							next = next.$right;
-						}
-					}
-
-					cell.downLength = 0;
-					if(!!cell.down) {
-						let next = cell.$down;
-						while(next && next.type === 'cell') {
-							cell.downLength++;
-							next = next.$down;
-						}
-					}
+		forEachBoard(board, function(cell) {
+			if(cell.type === 'none') board.stats.noneCount++;
+			if(cell.type === 'empty') {
+				cell.rightLength = 0;
+				if(!!cell.right) {
+					forEachCell(cell, '$right', () => {
+						cell.rightLength++;
+					});
 				}
-			});
+
+				cell.downLength = 0;
+				if(!!cell.down) {
+					forEachCell(cell, '$down', () => {
+						cell.downLength++;
+					});
+				}
+			}
 		});
 	}
-	function validateBoard(board) {
-		board.forEach(function(row) {
-			row.forEach(function(cell) {
-				validateCell(cell);
-			});
+
+	/* update cell.possible based on the numbers that are possible for the length/sum of a row/col */
+	function heuristic_lengthAndSum(board) {
+		forEachBoard(board, function(cell) {
+			if(cell.type === 'empty') {
+				if(!!cell.down) {
+					const lists = POSSIBLE_VALUES[cell.downLength][cell.down];
+
+					// TODO filter lists based on numbers in col
+
+					// collect all the possible numbers
+					const nums = {};
+					lists.forEach((list) => {
+						list.forEach((num) => {
+							nums[num] = true;
+						});
+					});
+
+					// mark numbers as impossible
+					forEachCell(cell, '$down', (next) => {
+						for(let num = 1; num <= 9; num++) {
+							if(!nums[num]) next.possible[num] = false;
+						}
+					});
+				}
+
+				if(!!cell.right) {
+					const lists = POSSIBLE_VALUES[cell.rightLength][cell.right];
+
+					// TODO filter lists based on numbers in row
+
+					// collect all the possible numbers
+					const nums = {};
+					lists.forEach((list) => {
+						list.forEach((num) => {
+							nums[num] = true;
+						});
+					});
+
+					// mark numbers as impossible
+					forEachCell(cell, '$right', (next) => {
+						for(let num = 1; num <= 9; num++) {
+							if(!nums[num]) next.possible[num] = false;
+						}
+					});
+				}
+			}
 		});
+	}
+
+	/* given that we've already paired down the possible values, only lists that have combinations of the related possible values */
+	// TODO heuristic_usePossible
+
+	/* if two cells have can only have the same 2 numbers, then no other cell can use those two numbers */
+	// TODO heuristic_pairs
+	// TODO make this more general (or i guess, make a similar one for 3 and 4)
+
+	/*
+	 * if a cell has possible values, that takes up the whole, uh, slot for the list of given values, then no other cell can use it
+	 * e.g. if a cell can only have numbers [1,2], and the possible values are [1,8,9] and [2,7,9], then other no other cell can use 1 or 2
+	 */
+	// TODO heuristic_slots
+
+	function validateBoard(board) {
+		forEachBoard(board, validateCell);
 	}
 	function validateCell(cell) {
 		cell.errors['value-impossible'] = false;
