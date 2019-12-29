@@ -146,7 +146,7 @@ table#board td > * {
 	color: var(--accentColor);
 }
 .error-label {
-	color: var(--secondaryTextColor);
+	color: var(--textPrimaryColor);
 	background-color: var(--accentColor);
 	padding: 0 1ch;
 	border-radius: 0.5em;
