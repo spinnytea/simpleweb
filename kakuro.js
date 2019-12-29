@@ -225,10 +225,10 @@
 	}
 
 	function calcStats(board) {
-		// REVIEW this impl is heavy handed
+		// REVIEW board.stats impl is heavy handed
 		board.stats = {
 			noneCount: 0,
-			cellNoValueCount: 0, // TODO calc and use
+			cellNoValueCount: 0, // TODO calc and use (to know when the game has been won)
 		};
 
 		forEachBoard(board, function(cell) {
@@ -379,7 +379,7 @@
 
 	/* if two cells have can only have the same 2 numbers, then no other cell can use those two numbers */
 	// TODO heuristic_pairs
-	// TODO make this more general (or i guess, make a similar one for 3 and 4)
+	// XXX make this more general (or i guess, make a similar one for 3 and 4)
 
 	/*
 	 * if a cell has possible values, that takes up the whole, uh, slot for the list of given values, then no other cell can use it
