@@ -8,8 +8,15 @@
 		function SimpleWebBodyController() {
 			const body = this;
 
-			const board = body.board = loadBoard(NINE_SEVEN_EASY);
+			/* either make new */
 			// const board = body.board = makeBoard(3, 3);
+			// body.showSetup = true;
+
+			/* or load existing */
+			const board = body.board = loadBoard(NINE_SEVEN_EASY);
+			body.showSetup = false;
+
+			/* and then setup */
 			calcStats(board);
 			validateBoard(board);
 
@@ -83,6 +90,10 @@
 			}
 
 			body.possibleValues = possibleValues;
+
+			body.save = function() {
+				alert(JSON.stringify(saveBoard(board)));
+			};
 		}
 	]);
 
@@ -481,106 +492,31 @@
 		return board;
 	}
 
-	/* super simple sample board */
-	const THREE_BY_THREE = [
-		[
-			{ type: 'empty' },
-			{ type: 'empty', down: 12 },
-			{ type: 'empty', down: 3 },
-		],
-		[
-			{ type: 'empty', right: 11 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-		],
-		[
-			{ type: 'empty', right: 4 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-		],
-	];
+	function saveBoard(board) {
+		return board.map(function(row) {
+			return row.map(function(cell) {
+				const ret = {
+					type: cell.type,
+				};
+				switch(cell.type) {
+					case 'none':
+						// nothing to save
+						break;
+					case 'empty':
+						if(!!cell.right) ret.right = cell.right;
+						if(!!cell.down) ret.down = cell.down;
+							break;
+					case 'cell':
+						if(!!cell.value) ret.value = cell.value;
+						break;
+				}
+				return ret;
+			});
+		});
+	};
 
-	const NINE_SEVEN_EASY = [
-		[
-			{ type: 'empty' },
-			{ type: 'empty', down: 14 },
-			{ type: 'empty', down: 4 },
-			{ type: 'empty', down: 19 },
-			{ type: 'empty' },
-			{ type: 'empty', down: 11 },
-			{ type: 'empty', down: 3 },
-		],
-		[
-			{ type: 'empty', right: 8 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty', right: 10 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-		],
-		[
-			{ type: 'empty', right: 17 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty', right: 3, down: 19 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-		],
-		[
-			{ type: 'empty' },
-			{ type: 'empty', down: 24 },
-			{ type: 'empty', down: 30, right: 7 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty' },
-		],
-		[
-			{ type: 'empty', right: 30 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty', down: 26 },
-			{ type: 'empty', down: 17 },
-		],
-		[
-			{ type: 'empty', right: 16 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty', down: 24, right: 21 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-		],
-		[
-			{ type: 'empty', right: 24 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty', down: 15, right: 17 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-		],
-		[
-			{ type: 'empty' },
-			{ type: 'empty', right: 30 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty' },
-		],
-		[
-			{ type: 'empty' },
-			{ type: 'empty' },
-			{ type: 'empty', right: 23 },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'cell' },
-			{ type: 'empty' },
-		],
-	];
+	/* super simple sample board */
+	// const TEMPLATE = JSON.parse('');
+	const THREE_BY_THREE = JSON.parse('[[{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":3}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":4},{"type":"cell"},{"type":"cell"}]]');
+	const NINE_SEVEN_EASY = JSON.parse('[[{"type":"empty"},{"type":"empty","down":14},{"type":"empty","down":4},{"type":"empty","down":19},{"type":"empty"},{"type":"empty","down":11},{"type":"empty","down":3}],[{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":17},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":19},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":7,"down":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":26},{"type":"empty","down":17}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":15},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}]]');
 })();

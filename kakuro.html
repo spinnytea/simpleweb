@@ -44,10 +44,15 @@
 	</div>
 
 	<div id="extra-info" ng-cloak>
-		<div ng-if="!!body.board.stats.noneCount">
+		<div ng-if="body.showSetup">
 			<h2>Still defining the board</h2>
-			<span class="badge badge-primary" ng-bind="body.board.stats.noneCount"></span>
-			remaining spaces to define.
+			<p>
+				<span class="badge badge-primary" ng-bind="body.board.stats.noneCount"></span>
+				remaining spaces to define.
+			</p>
+			<p>
+				<button type="button" class="btn-primary" ng-click="body.save()">Save</button>
+			</p>
 		</div>
 
 		<div>

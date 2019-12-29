@@ -48,6 +48,23 @@ p {
 	background-color: var(--primaryColor);
 }
 
+
+button {
+	padding: 0.5em 2ch;
+	border-radius: 0.5em;
+	border: none;
+	font-weight: bold;
+	cursor: pointer;
+}
+.btn-primary {
+	color: var(--textPrimaryColor);
+	background-color: var(--primaryColor);
+}
+.btn-accent {
+	color: var(--textPrimaryColor);
+	background-color: var(--accentColor);
+}
+
 /* page layout */
 
 body {
