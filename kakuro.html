@@ -36,7 +36,7 @@
 						<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !!cell.value" class="cell"
-						ng-class="{ 'invalid': cell.errors['value-impossible'] }"
+						ng-class="{ 'invalid': (cell.errors['value-impossible'] || cell.errors['value-duplicate']) }"
 						ng-bind="cell.value"></div>
 				</td>
 			</tr>

@@ -1,4 +1,5 @@
 (function() {
+	'use strict';
 	const MIN_ROW = 1+2;
 	const MAX_ROW = 1+2+3+4+5+6+7+8+9;
 
@@ -221,17 +222,40 @@
 	}
 	function validateCell(cell) {
 		cell.errors['value-impossible'] = false;
-		cell.errors['right-no-space'] = false;
-		cell.errors['down-no-space'] = false;
-
+		cell.errors['value-duplicate'] = false;
 		if(cell.type === 'cell') {
 			if(cell.value !== null) {
 				// value-impossible
 				// the value isn't one of the possible values
 				cell.errors['value-impossible'] = !cell.possible[cell.value];
+
+				// value-duplicate
+				// the value is already used in a row or column
+				let next = cell.$right;
+				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
+					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					next = next.$right;
+				}
+				next = cell.$left;
+				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
+					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					next = next.$left;
+				}
+				next = cell.$up;
+				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
+					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					next = next.$up;
+				}
+				next = cell.$down;
+				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
+					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					next = next.$down;
+				}
 			}
 		}
 
+		cell.errors['right-no-space'] = false;
+		cell.errors['down-no-space'] = false;
 		if(cell.type === 'empty') {
 			// right-no-space
 			// if a 'right' sum is specified, but there isn't room for it
@@ -245,11 +269,7 @@
 				cell.errors['down-no-space'] = true;
 			}
 		}
-
-		// TODO value-duplicate
-		// the value is already used in a row or column
 	}
-
 
 
 	function loadBoard(data) {
