@@ -19,7 +19,9 @@
 <body ng-app="kakuro" ng-controller="kakuro.body.controller as body" ng-keydown="body.handleKeys($event)">
 	<h1 id="title">Kakuro</h1>
 
-	<div id="board-wrapper">
+	<div class="loading-message" ng-show="::false">Doing math...</div>
+
+	<div id="board-wrapper" ng-cloak>
 		<table id="board">
 			<tr data-ng-repeat="row in body.board">
 				<td data-ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }">
@@ -41,7 +43,7 @@
 		</table>
 	</div>
 
-	<div id="extra-info">
+	<div id="extra-info" ng-cloak>
 		<div ng-if="!!body.board.stats.noneCount">
 			<h2>Still defining the board</h2>
 			<span class="badge badge-primary" ng-bind="body.board.stats.noneCount"></span>
@@ -51,13 +53,32 @@
 		<div>
 			<h2>Focus <small ng-bind="body.focus.cell.type"></small></h2>
 
-			<div ng-if="body.focus.cell.errors['value-impossible']"><span class="error-label">value-impossible</span> The specified value is not one of the possible values.</div>
-			<div ng-if="body.focus.cell.errors['value-duplicate']"><span class="error-label">value-duplicate</span> The specified value is used more than once in it's row/col.</div>
-			<div ng-if="body.focus.cell.errors['right-no-space']"><span class="error-label">right-no-space</span> There isn't enough room for a row.</div>
-			<div ng-if="body.focus.cell.errors['down-no-space']"><span class="error-label">down-no-space</span> There isn't enough room for a col.</div>
-			<div ng-if="body.focus.cell.errors['right-sum']"><span class="error-label">right-sum</span> The row is completed and the values don't match the advertised sum.</div>
-			<div ng-if="body.focus.cell.errors['down-sum']"><span class="error-label">down-sum</span> The col is completed and the values don't match the advertised sum.</div>
+			<p ng-if="body.focus.cell.errors['value-impossible']"><span class="error-label">value-impossible</span> The specified value is not one of the possible values.</p>
+			<p ng-if="body.focus.cell.errors['value-duplicate']"><span class="error-label">value-duplicate</span> The specified value is used more than once in it's row/col.</p>
+			<p ng-if="body.focus.cell.errors['right-no-space']"><span class="error-label">right-no-space</span> There isn't enough room for a row.</p>
+			<p ng-if="body.focus.cell.errors['down-no-space']"><span class="error-label">down-no-space</span> There isn't enough room for a col.</p>
+			<p ng-if="body.focus.cell.errors['right-sum']"><span class="error-label">right-sum</span> The row is completed and the values don't match the advertised sum.</p>
+			<p ng-if="body.focus.cell.errors['down-sum']"><span class="error-label">down-sum</span> The col is completed and the values don't match the advertised sum.</p>
 
+			<div ng-if="body.focus.cell.type === 'empty'">
+				<div ng-if="!!body.focus.cell.right">
+					<h3>Row</h3>
+					<p>
+						Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.right"></span>,
+						Len: <span class="badge badge-primary" ng-bind="body.focus.cell.rightLength"></span>
+					</p>
+					<p>{{body.possibleValues(body.focus.cell, 'right')}}</p>
+				</div>
+
+				<div ng-if="!!body.focus.cell.down">
+					<h3>Col</h3>
+					<p>
+						Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.down"></span>,
+						Len: <span class="badge badge-primary" ng-bind="body.focus.cell.downLength"></span>
+					</p>
+					<p>{{body.possibleValues(body.focus.cell, 'down')}}</p>
+				</div>
+			</div>
 			<div ng-if="body.focus.cell.type === 'cell'">
 				<h3>Row</h3>
 				<p>

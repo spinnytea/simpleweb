@@ -1,5 +1,7 @@
 @import 'css-variables/teal.css';
 
+/* general reset/setup */
+
 * {
 	margin: 0;
 	padding: 0;
@@ -20,8 +22,21 @@ h1, h2, h3, h3, h4, h5, h6 {
 h1 {
 	font-size: 3em;
 }
-#title {
-	margin: var(--fontHeight) 0;
+p {
+	margin-bottom: 0.5em;
+}
+
+/* random mixin */
+
+.invalid {
+	color: var(--accentColor);
+}
+
+.error-label {
+	color: var(--textPrimaryColor);
+	background-color: var(--accentColor);
+	padding: 0 1ch;
+	border-radius: 0.5em;
 }
 
 .badge {
@@ -33,6 +48,7 @@ h1 {
 	background-color: var(--primaryColor);
 }
 
+/* page layout */
 
 body {
 	display: grid;
@@ -40,10 +56,15 @@ body {
 	grid-template-columns: auto auto;
 	grid-template-areas:
 		"title title"
+		"loading loading"
 		"board info";
 }
 #title {
 	grid-area: title;
+	text-align: center;
+}
+.loading-message {
+	grid-area: loading;
 	text-align: center;
 }
 #board-wrapper {
@@ -53,7 +74,17 @@ body {
 	grid-area: info;
 }
 
+/* style top stuff */
 
+#title {
+	margin: var(--fontHeight) 0;
+}
+.loading-message {
+	font-size: 4em;
+	color: var(--accentColor);
+}
+
+/* style board */
 
 table#board {
 	border-spacing: 0;
@@ -142,16 +173,7 @@ table#board td > * {
 	background-color: var(--lightPrimaryColor);
 }
 
-.invalid {
-	color: var(--accentColor);
-}
-.error-label {
-	color: var(--textPrimaryColor);
-	background-color: var(--accentColor);
-	padding: 0 1ch;
-	border-radius: 0.5em;
-}
-
+/* style right stuff */
 
 #extra-info {
 	font-size: calc(var(--fontHeight) * 1.5);
@@ -162,7 +184,6 @@ table#board td > * {
 #extra-info > * > h2 {
 	margin-bottom: 0.25em;
 }
-
 
 #keys-summary dl dt {
 	width: 8ch;
