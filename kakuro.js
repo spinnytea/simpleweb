@@ -7,7 +7,10 @@
 		function SimpleWebBodyController() {
 			const body = this;
 
-			const board = body.board = loadBoard(THREE_BY_THREE);
+			const board = body.board = loadBoard(NINE_SEVEN_EASY);
+			// const board = body.board = makeBoard(3, 3);
+			validateBoard(board);
+
 			const focus = body.focus = {
 				x: 0,
 				y: 0,
@@ -245,8 +248,6 @@
 			}
 		}
 
-		validateBoard(board);
-
 		return board;
 	}
 
@@ -266,6 +267,90 @@
 			{ type: 'empty', right: 4 },
 			{ type: 'cell' },
 			{ type: 'cell' },
+		],
+	];
+
+	const NINE_SEVEN_EASY = [
+		[
+			{ type: 'empty' },
+			{ type: 'empty', down: 14 },
+			{ type: 'empty', down: 4 },
+			{ type: 'empty', down: 19 },
+			{ type: 'empty' },
+			{ type: 'empty', down: 11 },
+			{ type: 'empty', down: 3 },
+		],
+		[
+			{ type: 'empty', right: 8 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty', right: 10 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+		],
+		[
+			{ type: 'empty', right: 17 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty', right: 3, down: 19 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+		],
+		[
+			{ type: 'empty' },
+			{ type: 'empty', down: 24 },
+			{ type: 'empty', down: 30, right: 7 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty' },
+		],
+		[
+			{ type: 'empty', right: 30 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty', down: 26 },
+			{ type: 'empty', down: 17 },
+		],
+		[
+			{ type: 'empty', right: 16 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty', down: 24, right: 21 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+		],
+		[
+			{ type: 'empty', right: 24 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty', down: 15, right: 17 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+		],
+		[
+			{ type: 'empty' },
+			{ type: 'empty', right: 30 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty' },
+		],
+		[
+			{ type: 'empty' },
+			{ type: 'empty' },
+			{ type: 'empty', right: 23 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'cell' },
+			{ type: 'empty' },
 		],
 	];
 })();
