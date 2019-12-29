@@ -1,4 +1,4 @@
-@import 'css-variables/red.css';
+@import 'css-variables/teal.css';
 
 * {
 	margin: 0;
@@ -42,7 +42,7 @@ table#board td {
 	justify-content: center;
 	font-weight: lighter;
 }
-#board .cell.impossible {
+#board .cell.invalid {
 	color: var(--accentColor);
 }
 #board .cell-possible {

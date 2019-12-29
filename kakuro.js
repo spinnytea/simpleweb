@@ -1,11 +1,11 @@
 (function() {
-	// TODO some kind of save/load system
-
 	const module = angular.module('kakuro', []);
 	module.controller('kakuro.body.controller', [
 		function SimpleWebBodyController() {
 			const body = this;
+			// TODO count the 'none' squares
 
+			// TODO some kind of save/load system
 			const board = body.board = makeBoard(3, 3);
 			board[1][1].type = 'cell';
 			board[1][1].value = 9;
@@ -34,6 +34,11 @@
 					case 'ArrowLeft': moveFocusLeft(); break;
 					case 'e': setEmpty(focus.cell); break;
 					case 'c': setCell(focus.cell); break;
+					case '1': case '2': case '3':
+					case '4': case '5': case '6':
+					case '7': case '8': case '9':
+						setCellValue(focus.cell, +$event.key);
+						break;
 					default: console.log($event.key); break; // TODO remove
 				}
 			};
@@ -68,15 +73,6 @@
 					if(!again) moveFocusUp(true);
 				}
 				focus.cell = board[focus.y][focus.x];
-			}
-			function setEmpty(cell) {
-				cell.type = 'empty';
-				// modal to get left and right
-				// TODO do something better than a modal
-			}
-			function setCell(cell) {
-				cell.type = 'cell';
-				cell.value = null;
 			}
 		}
 	]);
@@ -121,6 +117,44 @@
 			 */
 			value: null,
 			possible: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true },
+
+			/**
+			 * validation errors to simplify ui feedback
+			 */
+			errors: {},
 		};
+	}
+
+	/**
+	 * during setup, mark a cell as empty
+	 */
+	function setEmpty(cell) {
+		cell.type = 'empty';
+		// modal to get left and right
+		// TODO do something better than a modal
+	}
+	/**
+	 * mark a cell as one that should have a value
+	 * clear the value of a cell
+	 */
+	function setCell(cell) {
+		cell.type = 'cell';
+		cell.value = null;
+	}
+	/**
+	 * give a specific value to a cell
+	 */
+	function setCellValue(cell, value) {
+		cell.value = value;
+		validateCell(cell);
+	}
+
+	function validateCell(cell) {
+		// value-impossible
+		// the value isn't one of the possible values
+		cell.errors['value-impossible'] = (cell.value !== null && !cell.possible[cell.value]);
+
+		// TODO value-duplicate
+		// the value is already used in a row or column
 	}
 })();
