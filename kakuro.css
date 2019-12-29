@@ -9,8 +9,8 @@ body {
 	--valueFontHeight: calc(3 * var(--fontHeight));
 	--cellSize: calc(4 * var(--fontHeight));
 
+	color: var(--primaryTextColor);
 	background-color: var(--textPrimaryColor);
-	color: var(--primaryColor); /* start with this color by default, we can change it as we find it */
 	font-size: var(--fontHeight);
 	font-family: sans-serif;
 }
@@ -20,21 +20,47 @@ h1, h2, h3, h3, h4, h5, h6 {
 h1 {
 	font-size: 3em;
 }
-
-/* TODO remove table center alignment; this is just for testing */
-table#board {
-	margin: 0 auto;
-}
-/* TODO remove title styles; this is just for testing */
 #title {
-	text-align: center;
 	margin: var(--fontHeight) 0;
 }
+
+.badge {
+	border-radius: 0.5em;
+	padding: 0 0.5em;
+}
+.badge-primary {
+	color: var(--textPrimaryColor);
+	background-color: var(--primaryColor);
+}
+
+
+body {
+	display: grid;
+	grid-template-rows: auto auto;
+	grid-template-columns: auto auto;
+	grid-template-areas:
+		"title title"
+		"board info";
+}
+#title {
+	grid-area: title;
+	text-align: center;
+}
+#board-wrapper {
+	grid-area: board;
+}
+#extra-info {
+	grid-area: info;
+}
+
 
 
 table#board {
 	border-spacing: 0;
 	border-collapse: collapse;
+	color: var(--primaryColor);
+
+	margin: 0 1em 0 auto; /* right align */
 }
 table#board td {
 	border-width: 1px;
@@ -119,14 +145,25 @@ table#board td > * {
 .invalid {
 	color: var(--accentColor);
 }
+.error-label {
+	color: var(--secondaryTextColor);
+	background-color: var(--accentColor);
+	padding: 0 1ch;
+	border-radius: 0.5em;
+}
 
 
-#keys-summary {
+#extra-info {
 	font-size: calc(var(--fontHeight) * 1.5);
 }
-#keys-summary dl {
-	margin: 1em;
+#extra-info > * + * {
+	margin-top: 1em;
 }
+#extra-info > * > h2 {
+	margin-bottom: 0.25em;
+}
+
+
 #keys-summary dl dt {
 	width: 8ch;
 	display: inline-block;

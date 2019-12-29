@@ -1,6 +1,6 @@
 'use strict';
 
-// TODO this doesn't change
+// TODO this doesn't change; save the result
 //  - save the values in a static way
 //  - comment out the code that computes them
 //  ---

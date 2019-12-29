@@ -13,22 +13,28 @@
 			calcStats(board);
 			validateBoard(board);
 
-			// TODO reset, run again
-			heuristic_lengthAndSum(board);
-
 			const focus = body.focus = {
 				x: 0,
 				y: 0,
 				cell: board[0][0],
 			};
 
-			// TODO put key docs on screen
 			body.handleKeys = function handleKeys($event) {
 				switch($event.key) {
 					case 'ArrowDown': moveFocusDown(); break;
 					case 'ArrowRight': moveFocusRight(); break;
 					case 'ArrowUp': moveFocusUp(); break;
 					case 'ArrowLeft': moveFocusLeft(); break;
+					case 'r':
+						// reset
+						forEachBoard(board, function(cell) {
+							if(cell.type === 'cell') {
+								for(let n = 1; n <= 9; n++)
+									cell.possible[n] = true;
+							}
+						});
+						heuristic_lengthAndSum(board);
+						break;
 					case 'e':
 						setEmpty(focus.cell);
 						calcStats(board);
@@ -343,28 +349,34 @@
 
 			// right-sum
 			// if a row is completed and the numbers don't add up to how it's labeled
-			let rightSum = 0;
-			forEachCell(cell, '$right', function(next) {
-				if(!!next.value) {
-					rightSum += next.value;
-				} else {
-					rightSum = null;
-					return false;
-				}
-			});
+			let rightSum = null;
+			if(!!cell.right) {
+				rightSum = 0;
+				forEachCell(cell, '$right', function(next) {
+					if(!!next.value) {
+						rightSum += next.value;
+					} else {
+						rightSum = null;
+						return false;
+					}
+				});
+			}
 			cell.errors['right-sum'] = (rightSum !== null && rightSum !== cell.right);
 
 			// down-sum
 			// if a col is completed and the numbers don't add up to how it's labeled
-			let downSum = 0;
-			forEachCell(cell, '$down', function(next) {
-				if(!!next.value) {
-					downSum += next.value;
-				} else {
-					downSum = null;
-					return false;
-				}
-			});
+			let downSum = null;
+			if(!!cell.down) {
+				downSum = 0;
+				forEachCell(cell, '$down', function(next) {
+					if(!!next.value) {
+						downSum += next.value;
+					} else {
+						downSum = null;
+						return false;
+					}
+				});
+			}
 			cell.errors['down-sum'] = (downSum !== null && downSum !== cell.down);
 		}
 	}
