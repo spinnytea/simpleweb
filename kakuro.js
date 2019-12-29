@@ -9,6 +9,7 @@
 
 			const board = body.board = loadBoard(NINE_SEVEN_EASY);
 			// const board = body.board = makeBoard(3, 3);
+			calcStats(board);
 			validateBoard(board);
 
 			const focus = body.focus = {
@@ -26,11 +27,13 @@
 					case 'ArrowLeft': moveFocusLeft(); break;
 					case 'e':
 						setEmpty(focus.cell);
+						calcStats(board);
 						validateBoard(board);
 						if(!!board.stats.noneCount) moveFocusDown();
 						break;
 					case 'c':
 						setCell(focus.cell);
+						calcStats(board);
 						validateBoard(board);
 						if(!!board.stats.noneCount) moveFocusDown();
 						break;
@@ -121,6 +124,8 @@
 			 */
 			right: null,
 			down: null,
+			rightLength: null,
+			downLength: null,
 
 			/**
 			 * for 'cell'
@@ -131,7 +136,7 @@
 			possible: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true },
 
 			/**
-			 * validation errors to simplify ui feedback
+			 * errors: validation errors to simplify ui feedback
 			 */
 			errors: {},
 		};
@@ -176,15 +181,41 @@
 		}
 	}
 
-	function validateBoard(board) {
-		// REVIEW this is heavy handed, and shouldn't really be in "validate"
+	function calcStats(board) {
+		// REVIEW this is heavy handed
 		board.stats = {
 			noneCount: 0,
 		};
+
+		board.forEach(function(row) {
+			row.forEach(function(cell) {
+				if(cell.type === 'none') board.stats.noneCount++;
+				if(cell.type === 'empty') {
+					cell.rightLength = 0;
+					if(!!cell.right) {
+						let next = cell.$right;
+						while(next && next.type === 'cell') {
+							cell.rightLength++;
+							next = next.$right;
+						}
+					}
+
+					cell.downLength = 0;
+					if(!!cell.down) {
+						let next = cell.$down;
+						while(next && next.type === 'cell') {
+							cell.downLength++;
+							next = next.$down;
+						}
+					}
+				}
+			});
+		});
+	}
+	function validateBoard(board) {
 		board.forEach(function(row) {
 			row.forEach(function(cell) {
 				validateCell(cell);
-				if(cell.type === 'none') board.stats.noneCount++;
 			});
 		});
 	}
@@ -204,28 +235,14 @@
 		if(cell.type === 'empty') {
 			// right-no-space
 			// if a 'right' sum is specified, but there isn't room for it
-			if(!!cell.right) {
-				// if there is a right specified
-				// then there must be at least 2 cells to the right
-				if(
-					!cell.$right || cell.$right.type !== 'cell' ||
-					!cell.$right.$right || cell.$right.$right.type !== 'cell'
-				) {
-					cell.errors['right-no-space'] = true;
-				}
+			if(!!cell.right && cell.rightLength < 2) {
+				cell.errors['right-no-space'] = true;
 			}
 
 			// down-no-space
 			// if a 'down' sum is specified, but there isn't room for it
-			if(!!cell.down) {
-				// if there is a down specified
-				// then there must be at least 2 cells to the down
-				if(
-					!cell.$down || cell.$down.type !== 'cell' ||
-					!cell.$down.$down || cell.$down.$down.type !== 'cell'
-				) {
-					cell.errors['down-no-space'] = true;
-				}
+			if(!!cell.down && cell.downLength < 2) {
+				cell.errors['down-no-space'] = true;
 			}
 		}
 
