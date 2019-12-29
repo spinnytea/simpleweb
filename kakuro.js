@@ -25,16 +25,7 @@
 					case 'ArrowRight': moveFocusRight(); break;
 					case 'ArrowUp': moveFocusUp(); break;
 					case 'ArrowLeft': moveFocusLeft(); break;
-					case 'r':
-						// reset
-						forEachBoard(board, function(cell) {
-							if(cell.type === 'cell') {
-								for(let n = 1; n <= 9; n++)
-									cell.possible[n] = true;
-							}
-						});
-						heuristic_lengthAndSum(board);
-						break;
+					case 'r': heuristic(board); break;
 					case 'e':
 						setEmpty(focus.cell);
 						calcStats(board);
@@ -51,6 +42,7 @@
 					case '4': case '5': case '6':
 					case '7': case '8': case '9':
 						setCellValue(focus.cell, +$event.key);
+						heuristic(board);
 						validateBoard(board);
 						break;
 					default: console.log($event.key); break; // TODO remove
@@ -143,6 +135,17 @@
 			 * for 'cell'
 			 * value: the value of cell, then one we actually picked
 			 * possible: which values are possible, we widdle them down with logic
+			 * TODO refactor possible booleans
+			 *  - each heuristic sets this to "false", if we do circular logic or change input, then we need to start from scratch
+			 *  - if one heuristic changes it back to "true", we need to run all the others again to see if any of them are false
+			 *  - this was originally designed to only ever take the value to false
+			 *  ---
+			 *  - maybe this always has to happen
+			 *  - the only variability after we start is changing the value of a cell
+			 *  - if it goes from null -> number, then it's fine
+			 *  - but if it goes from number -> number or number -> null, then we have to redo all the heuristics anyway
+			 * $rightHead: the cell that labels this row
+			 * $downHead: the cell that labels this col
 			 */
 			value: null,
 			possible: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true },
@@ -210,9 +213,10 @@
 	}
 
 	function calcStats(board) {
-		// REVIEW this is heavy handed
+		// REVIEW this impl is heavy handed
 		board.stats = {
 			noneCount: 0,
+			cellNoValueCount: 0, // TODO calc and use
 		};
 
 		forEachBoard(board, function(cell) {
@@ -258,32 +262,65 @@
 		});
 	}
 
+	function heuristic(board) {
+		heuristic_reset(board);
+		heuristic_value(board);
+		heuristic_lengthAndSum(board);
+	}
+
+	/* reset the possible values back to true */
+	function heuristic_reset(board) {
+		forEachBoard(board, function(cell) {
+			if(cell.type === 'cell') {
+				for(let n = 1; n <= 9; n++)
+					cell.possible[n] = true;
+			}
+		});
+	}
+
 	/* update cell.possible based on numbers that have alrady been entered */
-	// TODO heuristic_value
+	function heuristic_value(board) {
+		forEachBoard(board, function(cell) {
+			if(cell.type === 'empty') {
+				if(!!cell.right) {
+					// collect the numbers
+					let nums = {};
+					forEachCell(cell, '$right', (next) => {
+						if(!!next.value) nums[next.value] = true;
+					});
+					nums = Object.keys(nums).map((num) => +num);
+
+					// disallow the values
+					forEachCell(cell, '$right', (next) => {
+						nums.forEach(function(num) {
+							if(next.value !== num) next.possible[num] = false;
+						});
+					});
+				}
+
+				if(!!cell.down) {
+					// collect the numbers
+					let nums = {};
+					forEachCell(cell, '$down', (next) => {
+						if(!!next.value) nums[next.value] = true;
+					});
+					nums = Object.keys(nums).map((num) => +num);
+
+					// disallow the values
+					forEachCell(cell, '$down', (next) => {
+						nums.forEach(function(num) {
+							if(next.value !== num) next.possible[num] = false;
+						});
+					});
+				}
+			}
+		});
+	}
 
 	/* update cell.possible based on the numbers that are possible for the length/sum of a row/col */
 	function heuristic_lengthAndSum(board) {
 		forEachBoard(board, function(cell) {
 			if(cell.type === 'empty') {
-				if(!!cell.down) {
-					const lists = possibleValues(cell, 'down');
-
-					// collect all the possible numbers
-					const nums = {};
-					lists.forEach((list) => {
-						list.forEach((num) => {
-							nums[num] = true;
-						});
-					});
-
-					// mark numbers as impossible
-					forEachCell(cell, '$down', (next) => {
-						for(let num = 1; num <= 9; num++) {
-							if(!nums[num]) next.possible[num] = false;
-						}
-					});
-				}
-
 				if(!!cell.right) {
 					const lists = possibleValues(cell, 'right');
 
@@ -297,6 +334,25 @@
 
 					// mark numbers as impossible
 					forEachCell(cell, '$right', (next) => {
+						for(let num = 1; num <= 9; num++) {
+							if(!nums[num]) next.possible[num] = false;
+						}
+					});
+				}
+
+				if(!!cell.down) {
+					const lists = possibleValues(cell, 'down');
+
+					// collect all the possible numbers
+					const nums = {};
+					lists.forEach((list) => {
+						list.forEach((num) => {
+							nums[num] = true;
+						});
+					});
+
+					// mark numbers as impossible
+					forEachCell(cell, '$down', (next) => {
 						for(let num = 1; num <= 9; num++) {
 							if(!nums[num]) next.possible[num] = false;
 						}
