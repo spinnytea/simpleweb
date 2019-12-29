@@ -57,6 +57,22 @@
 			<div ng-if="body.focus.cell.errors['down-no-space']"><span class="error-label">down-no-space</span> There isn't enough room for a col.</div>
 			<div ng-if="body.focus.cell.errors['right-sum']"><span class="error-label">right-sum</span> The row is completed and the values don't match the advertised sum.</div>
 			<div ng-if="body.focus.cell.errors['down-sum']"><span class="error-label">down-sum</span> The col is completed and the values don't match the advertised sum.</div>
+
+			<div ng-if="body.focus.cell.type === 'cell'">
+				<h3>Row</h3>
+				<p>
+					Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.$rightHead.right"></span>,
+					Len: <span class="badge badge-primary" ng-bind="body.focus.cell.$rightHead.rightLength"></span>
+				</p>
+				<p>{{body.possibleValues(body.focus.cell.$rightHead, 'right')}}</p>
+
+				<h3>Col</h3>
+				<p>
+					Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.$downHead.down"></span>,
+					Len: <span class="badge badge-primary" ng-bind="body.focus.cell.$downHead.downLength"></span>
+				</p>
+				<p>{{body.possibleValues(body.focus.cell.$downHead, 'down')}}</p>
+			</div>
 		</div>
 
 		<div id="keys-summary">

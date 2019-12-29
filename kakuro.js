@@ -88,6 +88,8 @@
 				}
 				focus.cell = board[focus.y][focus.x];
 			}
+
+			body.possibleValues = possibleValues;
 		}
 	]);
 
@@ -144,6 +146,8 @@
 			 */
 			value: null,
 			possible: { 1: true, 2: true, 3: true, 4: true, 5: true, 6: true, 7: true, 8: true, 9: true },
+			$rightHead: null,
+			$downHead: null,
 
 			/**
 			 * errors: validation errors to simplify ui feedback
@@ -216,29 +220,53 @@
 			if(cell.type === 'empty') {
 				cell.rightLength = 0;
 				if(!!cell.right) {
-					forEachCell(cell, '$right', () => {
+					forEachCell(cell, '$right', (next) => {
 						cell.rightLength++;
+						next.$rightHead = cell;
 					});
 				}
 
 				cell.downLength = 0;
 				if(!!cell.down) {
-					forEachCell(cell, '$down', () => {
+					forEachCell(cell, '$down', (next) => {
 						cell.downLength++;
+						next.$downHead = cell;
 					});
 				}
 			}
+			if(cell.type !== 'cell') {
+				cell.$rightHead = null;
+				cell.$downHead = null;
+			}
 		});
 	}
+
+	function possibleValues(cell, dir) {
+		if(!cell || cell.type !== 'empty') return [];
+
+		// the list of numbers that have already been entered
+		const nums = [];
+		forEachCell(cell, '$'+dir, (next) => {
+			if(!!next.value) nums.push(next.value);
+		});
+
+		return POSSIBLE_VALUES[cell[dir + 'Length']][cell[dir]].filter(function(list) {
+			// filter lists based on numbers in dir
+			return nums.every(function(num) {
+				return list.indexOf(num) !== -1;
+			});
+		});
+	}
+
+	/* update cell.possible based on numbers that have alrady been entered */
+	// TODO heuristic_value
 
 	/* update cell.possible based on the numbers that are possible for the length/sum of a row/col */
 	function heuristic_lengthAndSum(board) {
 		forEachBoard(board, function(cell) {
 			if(cell.type === 'empty') {
 				if(!!cell.down) {
-					const lists = POSSIBLE_VALUES[cell.downLength][cell.down];
-
-					// TODO filter lists based on numbers in col
+					const lists = possibleValues(cell, 'down');
 
 					// collect all the possible numbers
 					const nums = {};
@@ -257,9 +285,7 @@
 				}
 
 				if(!!cell.right) {
-					const lists = POSSIBLE_VALUES[cell.rightLength][cell.right];
-
-					// TODO filter lists based on numbers in row
+					const lists = possibleValues(cell, 'right');
 
 					// collect all the possible numbers
 					const nums = {};
