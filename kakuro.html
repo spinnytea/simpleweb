@@ -29,9 +29,9 @@
 					<div ng-if="cell.type === 'none'" class="none"></div>
 					<div ng-if="cell.type === 'empty'" class="empty" ng-class="{ 'hasNum': !!(cell.right || cell.down) }">
 						<div class="right" ng-bind="cell.right"
-							ng-class="{ 'invalid': cell.errors['right-no-space'] }"></div>
+							ng-class="{ 'invalid': (cell.errors['right-no-space'] || cell.errors['right-sum']) }"></div>
 						<div class="down" ng-bind="cell.down"
-							ng-class="{ 'invalid': cell.errors['down-no-space'] }"></div>
+							ng-class="{ 'invalid': (cell.errors['down-no-space'] || cell.errors['down-sum']) }"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !cell.value" class="cell-possible">
 						<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>

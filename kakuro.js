@@ -155,7 +155,7 @@
 	function forEachCell(cell, dir, callback) {
 		let next = cell[dir];
 		while(next && next.type === 'cell') {
-			callback(next);
+			if(callback(next) === false) return;
 			next = next[dir];
 		}
 	}
@@ -326,6 +326,8 @@
 
 		cell.errors['right-no-space'] = false;
 		cell.errors['down-no-space'] = false;
+		cell.errors['right-sum'] = false;
+		cell.errors['down-sum'] = false;
 		if(cell.type === 'empty') {
 			// right-no-space
 			// if a 'right' sum is specified, but there isn't room for it
@@ -338,6 +340,32 @@
 			if(!!cell.down && cell.downLength < 2) {
 				cell.errors['down-no-space'] = true;
 			}
+
+			// right-sum
+			// if a row is completed and the numbers don't add up to how it's labeled
+			let rightSum = 0;
+			forEachCell(cell, '$right', function(next) {
+				if(!!next.value) {
+					rightSum += next.value;
+				} else {
+					rightSum = null;
+					return false;
+				}
+			});
+			cell.errors['right-sum'] = (rightSum !== null && rightSum !== cell.right);
+
+			// down-sum
+			// if a col is completed and the numbers don't add up to how it's labeled
+			let downSum = 0;
+			forEachCell(cell, '$down', function(next) {
+				if(!!next.value) {
+					downSum += next.value;
+				} else {
+					downSum = null;
+					return false;
+				}
+			});
+			cell.errors['down-sum'] = (downSum !== null && downSum !== cell.down);
 		}
 	}
 
