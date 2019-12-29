@@ -6,31 +6,8 @@
 	module.controller('kakuro.body.controller', [
 		function SimpleWebBodyController() {
 			const body = this;
-			// TODO count the 'none' squares
 
-			// TODO some kind of save/load system
-			const board = body.board = makeBoard(3, 3);
-			board[1][0].type = 'empty';
-			board[1][0].right = 11;
-			board[2][0].type = 'empty';
-			board[2][0].right = 4;
-			board[0][1].type = 'empty';
-			board[0][1].down = 12;
-			board[0][2].type = 'empty';
-			board[0][2].down = 3;
-
-			board[1][1].type = 'cell';
-			board[1][1].value = 9;
-			board[1][2].type = 'cell';
-			board[1][2].value = 2;
-			board[1][2].possible[2] = false;
-			board[2][1].type = 'cell';
-			board[2][1].value = 3;
-			board[2][2].type = 'cell';
-			board[2][2].possible[2] = false;
-			board[2][2].possible[3] = false;
-			// board[2][2].value = 1;
-
+			const board = body.board = loadBoard(THREE_BY_THREE);
 			const focus = body.focus = {
 				x: 0,
 				y: 0,
@@ -44,12 +21,21 @@
 					case 'ArrowRight': moveFocusRight(); break;
 					case 'ArrowUp': moveFocusUp(); break;
 					case 'ArrowLeft': moveFocusLeft(); break;
-					case 'e': setEmpty(focus.cell); break;
-					case 'c': setCell(focus.cell); break;
+					case 'e':
+						setEmpty(focus.cell);
+						validateBoard(board);
+						if(!!board.stats.noneCount) moveFocusDown();
+						break;
+					case 'c':
+						setCell(focus.cell);
+						validateBoard(board);
+						if(!!board.stats.noneCount) moveFocusDown();
+						break;
 					case '1': case '2': case '3':
 					case '4': case '5': case '6':
 					case '7': case '8': case '9':
 						setCellValue(focus.cell, +$event.key);
+						validateBoard(board);
 						break;
 					default: console.log($event.key); break; // TODO remove
 				}
@@ -92,12 +78,23 @@
 	/**
 	 * board[row][cell]
 	 */
-	function makeBoard(width, height) {
+	function makeBoard(height, width) {
 		const board = [];
 		while(board.length < height) {
 			const row = [];
 			while(row.length < width) {
 				const cell = makeCell();
+
+				if(row.length > 0) {
+					cell.$left = row[row.length-1];
+					cell.$left.$right = cell;
+				}
+
+				if(board.length > 0) {
+					cell.$up = board[board.length-1][row.length];
+					cell.$up.$down = cell;
+				}
+
 				row.push(cell);
 			}
 			board.push(row);
@@ -173,16 +170,102 @@
 	function setCellValue(cell, value) {
 		if(cell.type === 'cell') {
 			cell.value = value;
-			validateCell(cell);
 		}
 	}
 
+	function validateBoard(board) {
+		// REVIEW this is heavy handed, and shouldn't really be in "validate"
+		board.stats = {
+			noneCount: 0,
+		};
+		board.forEach(function(row) {
+			row.forEach(function(cell) {
+				validateCell(cell);
+				if(cell.type === 'none') board.stats.noneCount++;
+			});
+		});
+	}
 	function validateCell(cell) {
-		// value-impossible
-		// the value isn't one of the possible values
-		cell.errors['value-impossible'] = (cell.value !== null && !cell.possible[cell.value]);
+		cell.errors['value-impossible'] = false;
+		cell.errors['right-no-space'] = false;
+		cell.errors['down-no-space'] = false;
+
+		if(cell.type === 'cell') {
+			if(cell.value !== null) {
+				// value-impossible
+				// the value isn't one of the possible values
+				cell.errors['value-impossible'] = !cell.possible[cell.value];
+			}
+		}
+
+		if(cell.type === 'empty') {
+			// right-no-space
+			// if a 'right' sum is specified, but there isn't room for it
+			if(!!cell.right) {
+				// if there is a right specified
+				// then there must be at least 2 cells to the right
+				if(
+					!cell.$right || cell.$right.type !== 'cell' ||
+					!cell.$right.$right || cell.$right.$right.type !== 'cell'
+				) {
+					cell.errors['right-no-space'] = true;
+				}
+			}
+
+			// down-no-space
+			// if a 'down' sum is specified, but there isn't room for it
+			if(!!cell.down) {
+				// if there is a down specified
+				// then there must be at least 2 cells to the down
+				if(
+					!cell.$down || cell.$down.type !== 'cell' ||
+					!cell.$down.$down || cell.$down.$down.type !== 'cell'
+				) {
+					cell.errors['down-no-space'] = true;
+				}
+			}
+		}
 
 		// TODO value-duplicate
 		// the value is already used in a row or column
 	}
+
+
+
+	function loadBoard(data) {
+		const board = makeBoard(data.length, data[0].length);
+
+		for(let y = 0; y < data.length; y++) {
+			for(let x = 0; x < data[0].length; x++) {
+				// _.assign(board[y][x], data[y][x]);
+				let d = data[y][x];
+				for(let prop in d) {
+					board[y][x][prop] = d[prop];
+				}
+			}
+		}
+
+		validateBoard(board);
+
+		return board;
+	}
+
+	/* super simple sample board */
+	const THREE_BY_THREE = [
+		[
+			{ type: 'empty' },
+			{ type: 'empty', down: 12 },
+			{ type: 'empty', down: 3 },
+		],
+		[
+			{ type: 'empty', right: 11 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+		],
+		[
+			{ type: 'empty', right: 4 },
+			{ type: 'cell' },
+			{ type: 'cell' },
+		],
+	];
 })();

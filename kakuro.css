@@ -17,6 +17,19 @@ body {
 h1, h2, h3, h3, h4, h5, h6 {
 	font-weight: lighter;
 }
+h1 {
+	font-size: 3em;
+}
+
+/* TODO remove table center alignment; this is just for testing */
+table#board {
+	margin: 0 auto;
+}
+/* TODO remove title styles; this is just for testing */
+#title {
+	text-align: center;
+	margin: var(--fontHeight) 0;
+}
 
 
 table#board {
@@ -41,7 +54,7 @@ table#board td > * {
 }
 
 #board .none {
-	background-color: var(--dividerColor);
+	background-color: var(--primaryColor);
 
 	/* doesn't actually have any content */
 }
@@ -63,7 +76,7 @@ table#board td > * {
 #board .empty .down {
 	grid-area: down;
 }
-#board .empty::after {
+#board .empty.hasNum::after {
 	/* add a diagonal line */
 	content: " ";
 	position: absolute;
@@ -85,9 +98,6 @@ table#board td > * {
 	grid-template-rows: 1fr;
 	grid-template-columns: 1fr;
 }
-#board .cell.invalid {
-	color: var(--accentColor);
-}
 
 #board .cell-possible {
 	color: var(--secondaryTextColor);
@@ -103,4 +113,27 @@ table#board td > * {
 #board td.focus,
 #board td.focus > * {
 	background-color: var(--lightPrimaryColor);
+}
+
+.invalid {
+	color: var(--accentColor);
+}
+
+
+#keys-summary {
+	font-size: calc(var(--fontHeight) * 1.5);
+}
+#keys-summary dl {
+	margin: 1em;
+}
+#keys-summary dl dt {
+	width: 8ch;
+	display: inline-block;
+}
+#keys-summary dl dd {
+	display: inline;
+}
+#keys-summary dl dd::after {
+	content: " ";
+	display: block;
 }
