@@ -169,6 +169,14 @@
 			 *  - the only variability after we start is changing the value of a cell
 			 *  - if it goes from null -> number, then it's fine
 			 *  - but if it goes from number -> number or number -> null, then we have to redo all the heuristics anyway
+			 * TODO user input to turn off booleans
+			 *  - there are heuristics that need to be implemented
+			 *  - which means there is other logic for disabling numbers that we need to play with
+			 *  ---
+			 *  - it will let us play with it
+			 *  - there should always be user input so we can play with it
+			 *  - maybe in the future there may be a toggle to not do heuristics at all ?
+			 *  - maybe in the future there will be an auto-solver, and if it gets stuck you can turn off numbers to help it along
 			 * $rightHead: the cell that labels this row
 			 * $downHead: the cell that labels this col
 			 */
