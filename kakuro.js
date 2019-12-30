@@ -10,11 +10,11 @@
 
 			/* either make new */
 			// const board = body.board = makeBoard(16, 14);
-			body.showSetup = true;
+			// body.showSetup = true;
 
 			/* or load existing */
 			const board = body.board = loadBoard(FOURTEEN_SIXTEEN_MEDIUM);
-			// body.showSetup = false;
+			body.showSetup = false;
 
 			/* and then setup */
 			calcStats(board);
@@ -271,7 +271,7 @@
 	}
 
 	function possibleValues(cell, dir) {
-		if(!cell || cell.type !== 'empty') return [];
+		if(!cell || cell.type !== 'empty' && !!cell[dir] && !!cell[dir+'Length']) return [];
 
 		// the list of numbers that have already been entered
 		const nums = [];
@@ -279,7 +279,12 @@
 			if(!!next.value) nums.push(next.value);
 		});
 
-		return POSSIBLE_VALUES[cell[dir + 'Length']][cell[dir]].filter(function(list) {
+		// during setup, the cols/rows aren't complete, they may not have the right length or sum
+		// we don't have access to the stats to check the noneCount, so we can't simply obstain until the end
+		if(!POSSIBLE_VALUES[cell[dir+'Length']]) return [];
+		if(!POSSIBLE_VALUES[cell[dir+'Length']][cell[dir]]) return [];
+
+		return POSSIBLE_VALUES[cell[dir+'Length']][cell[dir]].filter(function(list) {
 			// filter lists based on numbers in dir
 			return nums.every(function(num) {
 				return list.indexOf(num) !== -1;
@@ -388,6 +393,7 @@
 	}
 
 	/* given that we've already paired down the possible values, only lists that have combinations of the related possible values */
+	/* e.g. 7 [1, 2, 3, 4, 5] [4, 5, 6] ~ this should take out the 4, 5 from the first cell since there is no appropriate counterpart */
 	// TODO heuristic_usePossible
 
 	/* if two cells have can only have the same 2 numbers, then no other cell can use those two numbers */
@@ -485,6 +491,12 @@
 				});
 			}
 			cell.errors['down-sum'] = (downSum !== null && downSum !== cell.down);
+
+			// TODO right-no-number
+			// if there is an empty with no right sum, and to the right is a cell
+
+			// TODO down-no-number
+			// if there is an empty with no down sum, and to the down is a cell
 		}
 	}
 
@@ -532,5 +544,5 @@
 	// const TEMPLATE = JSON.parse('');
 	const THREE_BY_THREE = JSON.parse('[[{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":3}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":4},{"type":"cell"},{"type":"cell"}]]');
 	const NINE_SEVEN_EASY = JSON.parse('[[{"type":"empty"},{"type":"empty","down":14},{"type":"empty","down":4},{"type":"empty","down":19},{"type":"empty"},{"type":"empty","down":11},{"type":"empty","down":3}],[{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":17},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":19},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":7,"down":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":26},{"type":"empty","down":17}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":15},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}]]');
-	const FOURTEEN_SIXTEEN_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":23},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":33},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":6},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":12},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":11},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":16},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":30},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":39},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":3},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":24},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":21},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}],[{"type":"empty","right":11},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"},{"type":"none"}]]');
+	const FOURTEEN_SIXTEEN_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"empty","down":17},{"type":"empty","down":21},{"type":"empty","down":17},{"type":"empty","down":15},{"type":"empty","down":23},{"type":"empty","down":3},{"type":"empty"},{"type":"empty","down":8},{"type":"empty","down":23},{"type":"empty","down":7},{"type":"empty"},{"type":"empty","down":21},{"type":"empty","down":30}],[{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":33},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":10,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":24,"down":34},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":26},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":10},{"type":"empty","down":22},{"type":"empty","down":23}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":34},{"type":"cell"},{"type":"cell"},{"type":"empty","right":34,"down":20},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":22,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":29},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":41,"down":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":6},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":23},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":21},{"type":"empty","down":6}],[{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":31},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":23},{"type":"empty","down":14},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":15,"down":26},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":8},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":20},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":5},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":15},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14}],[{"type":"empty","right":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}]]');
 })();

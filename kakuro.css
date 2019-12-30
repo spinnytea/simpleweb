@@ -70,7 +70,7 @@ button {
 body {
 	display: grid;
 	grid-template-rows: auto auto;
-	grid-template-columns: auto auto;
+	grid-template-columns: 1fr 1fr;
 	grid-template-areas:
 		"title title"
 		"loading loading"
