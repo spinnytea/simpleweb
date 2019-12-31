@@ -8,6 +8,14 @@
 		function SimpleWebBodyController() {
 			const body = this;
 
+			// TODO demo modes
+			//  - we shouldn't have to pick to load/make a board in source
+			//  - make a ui control to let us do this setup
+
+			// TODO about dialog
+			//  - make a little description of what kakuro is for new players
+			//  - maybe link to wikipedia?
+
 			/* either make new */
 			// const board = body.board = makeBoard(16, 14);
 			// body.showSetup = true;
