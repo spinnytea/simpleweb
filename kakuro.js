@@ -3,6 +3,8 @@
 	const MIN_ROW = 1+2;
 	const MAX_ROW = 1+2+3+4+5+6+7+8+9;
 
+	// TEST high level integration test that solves a very simple board
+	//  - just to make sure that the game works
 	const module = angular.module('kakuro', []);
 	module.controller('kakuro.body.controller', [
 		function SimpleWebBodyController() {
