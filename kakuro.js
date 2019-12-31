@@ -17,11 +17,11 @@
 			//  - maybe link to wikipedia?
 
 			/* either make new */
-			// const board = body.board = makeBoard(16, 14);
+			// const board = body.board = makeBoard(10, 8);
 			// body.showSetup = true;
 
 			/* or load existing */
-			const board = body.board = loadBoard(FOURTEEN_SIXTEEN_MEDIUM);
+			const board = body.board = loadBoard(TEN_EIGHT_MEDIUM);
 			body.showSetup = false;
 
 			/* and then setup */
@@ -168,7 +168,7 @@
 			 * for 'cell'
 			 * value: the value of cell, then one we actually picked
 			 * possible: which values are possible, we widdle them down with logic
-			 * TODO refactor possible booleans
+			 * REVIEW refactor possible booleans
 			 *  - each heuristic sets this to "false", if we do circular logic or change input, then we need to start from scratch
 			 *  - if one heuristic changes it back to "true", we need to run all the others again to see if any of them are false
 			 *  - this was originally designed to only ever take the value to false
@@ -181,7 +181,7 @@
 			 *  - there are heuristics that need to be implemented
 			 *  - which means there is other logic for disabling numbers that we need to play with
 			 *  ---
-			 *  - it will let us play with it
+			 *  - *it will let us play with it* (it makes the game more playable)
 			 *  - there should always be user input so we can play with it
 			 *  - maybe in the future there may be a toggle to not do heuristics at all ?
 			 *  - maybe in the future there will be an auto-solver, and if it gets stuck you can turn off numbers to help it along
@@ -199,6 +199,7 @@
 			errors: {},
 		};
 	}
+	/** loop over the whole board, callback(cell) for every cell on the board */
 	function forEachBoard(board, callback) {
 		board.forEach(function(row) {
 			row.forEach(function(cell) {
@@ -206,18 +207,24 @@
 			});
 		});
 	}
-	function forEachCell(cell, dir, callback) {
+	/**
+	 * given a cell (usually an empty), step in the direct, and call every cell in the path, until the end
+	 * this is primarily used to loop over every cell in a given right/down row/col
+	 */
+	function marchAlongCell(cell, dir, callback) {
 		let next = cell[dir];
 		while(next && next.type === 'cell') {
 			if(callback(next) === false) return;
 			next = next[dir];
 		}
 	}
+	/** most of the heuristics start with the empty cells; instead of looping over every cell every time, just loop over these */
+	// TODO forEachEmpty
 
 	/**
 	 * during setup, mark a cell as empty
 	 *
-	 * XXX think of a better way to get the input than a prompt
+	 * REVIEW think of a better way to get the input than a prompt
 	 */
 	function setEmpty(cell) {
 		cell.type = 'empty';
@@ -265,7 +272,7 @@
 			if(cell.type === 'empty') {
 				cell.rightLength = 0;
 				if(!!cell.right) {
-					forEachCell(cell, '$right', (next) => {
+					marchAlongCell(cell, '$right', (next) => {
 						cell.rightLength++;
 						next.$rightHead = cell;
 					});
@@ -273,7 +280,7 @@
 
 				cell.downLength = 0;
 				if(!!cell.down) {
-					forEachCell(cell, '$down', (next) => {
+					marchAlongCell(cell, '$down', (next) => {
 						cell.downLength++;
 						next.$downHead = cell;
 					});
@@ -291,7 +298,7 @@
 
 		// the list of numbers that have already been entered
 		const nums = [];
-		forEachCell(cell, '$'+dir, (next) => {
+		marchAlongCell(cell, '$'+dir, (next) => {
 			if(!!next.value) nums.push(next.value);
 		});
 
@@ -308,104 +315,106 @@
 		});
 	}
 
+	// IDEA doing heuristics on the whole board is using the hammer
+	//  - we can make it faster/smarter if we do heuristics per cell
+	//  - the trick is, how do we decide when to do each one?
+	//  - (reset / lengthAndSum are special, and should just be done globally up front)
 	function heuristic(board) {
-		heuristic_reset(board);
-		heuristic_value(board);
-		heuristic_lengthAndSum(board);
+		forEachBoard(board, heuristic_reset);
+		forEachBoard(board, heuristic_value);
+		forEachBoard(board, heuristic_lengthAndSum);
 	}
 
 	/* reset the possible values back to true */
-	function heuristic_reset(board) {
-		forEachBoard(board, function(cell) {
-			if(cell.type === 'cell') {
-				for(let n = 1; n <= 9; n++)
-					cell.possible[n] = true;
-			}
-		});
+	// TEST heuristic_reset; uh, for completeness
+	function heuristic_reset(cell) {
+		if(cell.type === 'cell') {
+			for(let n = 1; n <= 9; n++)
+				cell.possible[n] = true;
+		}
 	}
 
 	/* update cell.possible based on numbers that have alrady been entered */
-	function heuristic_value(board) {
-		forEachBoard(board, function(cell) {
-			if(cell.type === 'empty') {
-				if(!!cell.right) {
-					// collect the numbers
-					let nums = {};
-					forEachCell(cell, '$right', (next) => {
-						if(!!next.value) nums[next.value] = true;
-					});
-					nums = Object.keys(nums).map((num) => +num);
+	// TEST heuristic_value
+	function heuristic_value(cell) {
+		if(cell.type === 'empty') {
+			if(!!cell.right) {
+				// collect the numbers
+				let nums = {};
+				marchAlongCell(cell, '$right', (next) => {
+					if(!!next.value) nums[next.value] = true;
+				});
+				nums = Object.keys(nums).map((num) => +num);
 
-					// disallow the values
-					forEachCell(cell, '$right', (next) => {
-						nums.forEach(function(num) {
-							if(next.value !== num) next.possible[num] = false;
-						});
+				// disallow the values
+				marchAlongCell(cell, '$right', (next) => {
+					nums.forEach(function(num) {
+						if(next.value !== num) next.possible[num] = false;
 					});
-				}
-
-				if(!!cell.down) {
-					// collect the numbers
-					let nums = {};
-					forEachCell(cell, '$down', (next) => {
-						if(!!next.value) nums[next.value] = true;
-					});
-					nums = Object.keys(nums).map((num) => +num);
-
-					// disallow the values
-					forEachCell(cell, '$down', (next) => {
-						nums.forEach(function(num) {
-							if(next.value !== num) next.possible[num] = false;
-						});
-					});
-				}
+				});
 			}
-		});
+
+			if(!!cell.down) {
+				// collect the numbers
+				let nums = {};
+				marchAlongCell(cell, '$down', (next) => {
+					if(!!next.value) nums[next.value] = true;
+				});
+				nums = Object.keys(nums).map((num) => +num);
+
+				// disallow the values
+				marchAlongCell(cell, '$down', (next) => {
+					nums.forEach(function(num) {
+						if(next.value !== num) next.possible[num] = false;
+					});
+				});
+			}
+		}
 	}
 
 	/* update cell.possible based on the numbers that are possible for the length/sum of a row/col */
-	function heuristic_lengthAndSum(board) {
-		forEachBoard(board, function(cell) {
-			if(cell.type === 'empty') {
-				if(!!cell.right) {
-					const lists = possibleValues(cell, 'right');
+	/* basically, given a length and sum, what are all the possible numbers we could use */
+	// TEST heuristic_value
+	function heuristic_lengthAndSum(cell) {
+		if(cell.type === 'empty') {
+			if(!!cell.right) {
+				const lists = possibleValues(cell, 'right');
 
-					// collect all the possible numbers
-					const nums = {};
-					lists.forEach((list) => {
-						list.forEach((num) => {
-							nums[num] = true;
-						});
+				// collect all the possible numbers
+				const nums = {};
+				lists.forEach((list) => {
+					list.forEach((num) => {
+						nums[num] = true;
 					});
+				});
 
-					// mark numbers as impossible
-					forEachCell(cell, '$right', (next) => {
-						for(let num = 1; num <= 9; num++) {
-							if(!nums[num]) next.possible[num] = false;
-						}
-					});
-				}
-
-				if(!!cell.down) {
-					const lists = possibleValues(cell, 'down');
-
-					// collect all the possible numbers
-					const nums = {};
-					lists.forEach((list) => {
-						list.forEach((num) => {
-							nums[num] = true;
-						});
-					});
-
-					// mark numbers as impossible
-					forEachCell(cell, '$down', (next) => {
-						for(let num = 1; num <= 9; num++) {
-							if(!nums[num]) next.possible[num] = false;
-						}
-					});
-				}
+				// mark numbers as impossible
+				marchAlongCell(cell, '$right', (next) => {
+					for(let num = 1; num <= 9; num++) {
+						if(!nums[num]) next.possible[num] = false;
+					}
+				});
 			}
-		});
+
+			if(!!cell.down) {
+				const lists = possibleValues(cell, 'down');
+
+				// collect all the possible numbers
+				const nums = {};
+				lists.forEach((list) => {
+					list.forEach((num) => {
+						nums[num] = true;
+					});
+				});
+
+				// mark numbers as impossible
+				marchAlongCell(cell, '$down', (next) => {
+					for(let num = 1; num <= 9; num++) {
+						if(!nums[num]) next.possible[num] = false;
+					}
+				});
+			}
+		}
 	}
 
 	/* given that we've already paired down the possible values, only lists that have combinations of the related possible values */
@@ -421,6 +430,13 @@
 	 * e.g. if a cell can only have numbers [1,2], and the possible values are [1,8,9] and [2,7,9], then other no other cell can use 1 or 2
 	 */
 	// TODO heuristic_slots
+
+	// XXX there is a more general heuristic for pairs/slots, but i just can formulate it, it may be too complex
+	//  - given any set of cells in a row, if they all use up the same number of slots as the group (no more no less)
+	//    AND the numbers of this slot are not in any other cell
+	//    THEN those cells must only use the numbers in those slots, and the other cells cannot use the numbers in those slots
+	//  - that's not exactly right, there's a hole somewhere
+	//  - I probably need examples and unit tests
 
 	function validateBoard(board) {
 		forEachBoard(board, validateCell);
@@ -481,7 +497,7 @@
 			let rightSum = null;
 			if(!!cell.right) {
 				rightSum = 0;
-				forEachCell(cell, '$right', function(next) {
+				marchAlongCell(cell, '$right', function(next) {
 					if(!!next.value) {
 						rightSum += next.value;
 					} else {
@@ -497,7 +513,7 @@
 			let downSum = null;
 			if(!!cell.down) {
 				downSum = 0;
-				forEachCell(cell, '$down', function(next) {
+				marchAlongCell(cell, '$down', function(next) {
 					if(!!next.value) {
 						downSum += next.value;
 					} else {
@@ -559,6 +575,7 @@
 	/* super simple sample board */
 	// const TEMPLATE = JSON.parse('');
 	const THREE_BY_THREE = JSON.parse('[[{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":3}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":4},{"type":"cell"},{"type":"cell"}]]');
-	const NINE_SEVEN_EASY = JSON.parse('[[{"type":"empty"},{"type":"empty","down":14},{"type":"empty","down":4},{"type":"empty","down":19},{"type":"empty"},{"type":"empty","down":11},{"type":"empty","down":3}],[{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":17},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":19},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":7,"down":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":26},{"type":"empty","down":17}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":15},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}]]');
-	const FOURTEEN_SIXTEEN_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"empty","down":17},{"type":"empty","down":21},{"type":"empty","down":17},{"type":"empty","down":15},{"type":"empty","down":23},{"type":"empty","down":3},{"type":"empty"},{"type":"empty","down":8},{"type":"empty","down":23},{"type":"empty","down":7},{"type":"empty"},{"type":"empty","down":21},{"type":"empty","down":30}],[{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":33},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":10,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":24,"down":34},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":26},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":10},{"type":"empty","down":22},{"type":"empty","down":23}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":34},{"type":"cell"},{"type":"cell"},{"type":"empty","right":34,"down":20},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":22,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":29},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":41,"down":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":6},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":23},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":21},{"type":"empty","down":6}],[{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":31},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":23},{"type":"empty","down":14},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":15,"down":26},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":8},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":20},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":5},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":15},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14}],[{"type":"empty","right":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}]]');
+	const SEVEN_NINE_EASY = JSON.parse('[[{"type":"empty"},{"type":"empty","down":14},{"type":"empty","down":4},{"type":"empty","down":19},{"type":"empty"},{"type":"empty","down":11},{"type":"empty","down":3}],[{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":17},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":19},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":7,"down":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":26},{"type":"empty","down":17}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":15},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}]]');
+	const TEN_EIGHT_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"empty"},{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":9},{"type":"empty","down":16},{"type":"empty","down":23},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":26,"down":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty","right":19,"down":3},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":3}],[{"type":"empty","right":18},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":6},{"type":"empty","right":7,"down":3},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":4},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":4},{"type":"empty","right":6,"down":14},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":16},{"type":"empty","down":10}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":5,"down":9},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14},{"type":"empty","right":18,"down":12},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty","right":28},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"},{"type":"empty"}]]');
+	const SIXTEEN_FOURTEEN_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"empty","down":17},{"type":"empty","down":21},{"type":"empty","down":17},{"type":"empty","down":15},{"type":"empty","down":23},{"type":"empty","down":3},{"type":"empty"},{"type":"empty","down":8},{"type":"empty","down":23},{"type":"empty","down":7},{"type":"empty"},{"type":"empty","down":21},{"type":"empty","down":30}],[{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":33},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":10,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":24,"down":34},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":26},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":10},{"type":"empty","down":22},{"type":"empty","down":23}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":34},{"type":"cell"},{"type":"cell"},{"type":"empty","right":34,"down":20},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":22,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":29},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":41,"down":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":6},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":23},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":21},{"type":"empty","down":6}],[{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":31},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":23},{"type":"empty","down":14},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":15,"down":26},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":8},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":20},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":5},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":15},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14}],[{"type":"empty","right":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}]]');
 })();
