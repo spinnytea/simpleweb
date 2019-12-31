@@ -219,7 +219,11 @@
 		}
 	}
 	/** most of the heuristics start with the empty cells; instead of looping over every cell every time, just loop over these */
-	// TODO forEachEmpty
+	function forEachEmpty(board, callback) {
+		board.$empty.forEach(function(cell) {
+			callback(cell);
+		});
+	}
 
 	/**
 	 * during setup, mark a cell as empty
@@ -266,10 +270,13 @@
 			noneCount: 0,
 			cellNoValueCount: 0, // TODO calc and use (to know when the game has been won)
 		};
+		board.$empty = [];
 
 		forEachBoard(board, function(cell) {
 			if(cell.type === 'none') board.stats.noneCount++;
 			if(cell.type === 'empty') {
+				board.$empty.push(cell);
+
 				cell.rightLength = 0;
 				if(!!cell.right) {
 					marchAlongCell(cell, '$right', (next) => {
@@ -321,8 +328,8 @@
 	//  - (reset / lengthAndSum are special, and should just be done globally up front)
 	function heuristic(board) {
 		forEachBoard(board, heuristic_reset);
-		forEachBoard(board, heuristic_value);
-		forEachBoard(board, heuristic_lengthAndSum);
+		forEachEmpty(board, heuristic_value);
+		forEachEmpty(board, heuristic_lengthAndSum);
 	}
 
 	/* reset the possible values back to true */
