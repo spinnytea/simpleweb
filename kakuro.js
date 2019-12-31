@@ -25,7 +25,7 @@
 			body.showSetup = false;
 
 			/* and then setup */
-			calcStats(board);
+			recomputeMetadata(board);
 			validateBoard(board);
 
 			const focus = body.focus = {
@@ -43,15 +43,15 @@
 					case 'r': heuristic(board); break;
 					case 'e':
 						setEmpty(focus.cell);
-						calcStats(board);
+						recomputeMetadata(board);
 						validateBoard(board);
-						if(!!board.stats.noneCount) moveFocusDown();
+						if(!!board.$stats.noneCount) moveFocusDown();
 						break;
 					case 'c':
 						setCell(focus.cell);
-						calcStats(board);
+						recomputeMetadata(board);
 						validateBoard(board);
-						if(!!board.stats.noneCount) moveFocusDown();
+						if(!!board.$stats.noneCount) moveFocusDown();
 						else heuristic(board);
 						break;
 					case '1': case '2': case '3':
@@ -61,7 +61,7 @@
 						heuristic(board);
 						validateBoard(board);
 						break;
-					default: console.log($event.key); break; // TODO remove
+					// default: console.log($event.key); break;
 				}
 			};
 			function moveFocusDown(again) {
@@ -264,16 +264,23 @@
 		}
 	}
 
-	function calcStats(board) {
-		// REVIEW board.stats impl is heavy handed
-		board.stats = {
+	/**
+	 * this is for initializing all the metadata about a board
+	 * since we can load a board, make a board from scratch, or live edit a board (there are multiple ways to source a board)
+	 * we need to call this every time the board changes
+	 *
+	 * changes: not the solving of the board, but the board configuration
+	 * changes: cell type, empty right/down
+	 */
+	function recomputeMetadata(board) {
+		board.$stats = {
 			noneCount: 0,
 			cellNoValueCount: 0, // TODO calc and use (to know when the game has been won)
 		};
 		board.$empty = [];
 
 		forEachBoard(board, function(cell) {
-			if(cell.type === 'none') board.stats.noneCount++;
+			if(cell.type === 'none') board.$stats.noneCount++;
 			if(cell.type === 'empty') {
 				board.$empty.push(cell);
 
@@ -381,7 +388,7 @@
 
 	/* update cell.possible based on the numbers that are possible for the length/sum of a row/col */
 	/* basically, given a length and sum, what are all the possible numbers we could use */
-	// TEST heuristic_value
+	// TEST heuristic_lengthAndSum
 	function heuristic_lengthAndSum(cell) {
 		if(cell.type === 'empty') {
 			if(!!cell.right) {
@@ -438,7 +445,7 @@
 	 */
 	// TODO heuristic_slots
 
-	// XXX there is a more general heuristic for pairs/slots, but i just can formulate it, it may be too complex
+	// IDEA there is a more general heuristic for pairs/slots, but i just can formulate it, it may be too complex
 	//  - given any set of cells in a row, if they all use up the same number of slots as the group (no more no less)
 	//    AND the numbers of this slot are not in any other cell
 	//    THEN those cells must only use the numbers in those slots, and the other cells cannot use the numbers in those slots
@@ -531,10 +538,10 @@
 			}
 			cell.errors['down-sum'] = (downSum !== null && downSum !== cell.down);
 
-			// TODO right-no-number
+			// TODO right-number-missing
 			// if there is an empty with no right sum, and to the right is a cell
 
-			// TODO down-no-number
+			// TODO down-number-missing
 			// if there is an empty with no down sum, and to the down is a cell
 		}
 	}
