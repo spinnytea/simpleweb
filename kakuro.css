@@ -25,6 +25,12 @@ h1 {
 p {
 	margin-bottom: 0.5em;
 }
+:focus {
+	outline-color: var(--darkPrimaryColor);
+}
+::selection {
+	background: var(--dividerColor);
+}
 
 /* random mixin */
 
@@ -49,10 +55,22 @@ p {
 }
 
 
+input {
+	padding: 0.5em 2ch;
+	border-radius: 0.5em;
+	border-color: var(--primaryTextColor);
+	margin: 0 0.5em 0.5em 0;
+
+	color: var(--primaryTextColor);
+	background-color: var(--textPrimaryColor);
+}
+input.ng-dirty.ng-invalid {
+	color: var(--accentColor);
+}
+
 button {
 	padding: 0.5em 2ch;
 	border-radius: 0.5em;
-	border: none;
 	font-weight: bold;
 	cursor: pointer;
 	margin: 0 0.5em 0.5em 0;
@@ -65,10 +83,12 @@ button[disabled] {
 .btn-primary {
 	color: var(--textPrimaryColor);
 	background-color: var(--primaryColor);
+	border-color: var(--primaryColor);
 }
 .btn-accent {
 	color: var(--textPrimaryColor);
 	background-color: var(--accentColor);
+	border-color: var(--accentColor);
 }
 
 /* page layout */
