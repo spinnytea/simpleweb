@@ -260,14 +260,14 @@
 		cell.type = 'empty';
 
 		let val = +prompt('Sum across the row to the right.', cell.right || '');
-		if(!isNaN(val) && MIN_ROW <= val && val <= MAX_ROW) {
+		if(!isNaN(val) && +val === Math.floor(val) && MIN_ROW <= val && val <= MAX_ROW) {
 			cell.right = +val;
 		} else {
 			cell.right = null;
 		}
 
 		val = +prompt('Sum down the col below.', cell.down || '');
-		if(!isNaN(val) && MIN_ROW <= val && val <= MAX_ROW) {
+		if(!isNaN(val) && +val === Math.floor(val) && MIN_ROW <= val && val <= MAX_ROW) {
 			cell.down = +val;
 		} else {
 			cell.down = null;
@@ -484,6 +484,7 @@
 		forEachBoard(board, validateCell);
 	}
 	function validateCell(cell) {
+		// NOTE don't forget text feedback
 		cell.errors['value-impossible'] = false;
 		cell.errors['value-duplicate'] = false;
 		if(cell.type === 'cell') {
@@ -517,10 +518,13 @@
 			}
 		}
 
+		// NOTE don't forget text feedback
 		cell.errors['right-no-space'] = false;
 		cell.errors['down-no-space'] = false;
 		cell.errors['right-sum'] = false;
 		cell.errors['down-sum'] = false;
+		cell.errors['right-number-missing'] = false;
+		cell.errors['down-number-missing'] = false;
 		if(cell.type === 'empty') {
 			// right-no-space
 			// if a 'right' sum is specified, but there isn't room for it
@@ -566,11 +570,27 @@
 			}
 			cell.errors['down-sum'] = (downSum !== null && downSum !== cell.down);
 
-			// TODO right-number-missing
+			// right-number-missing
 			// if there is an empty with no right sum, and to the right is a cell
+			if(!cell.right) {
+				if(cell.$right && cell.$right.type === 'cell') {
+					cell.errors['right-number-missing'] = true;
+					cell.right = 0;
+				} else {
+					cell.right = null;
+				}
+			}
 
-			// TODO down-number-missing
+			// down-number-missing
 			// if there is an empty with no down sum, and to the down is a cell
+			if(!cell.down) {
+				if(cell.$down && cell.$down.type === 'cell') {
+					cell.errors['down-number-missing'] = true;
+					cell.down = 0;
+				} else {
+					cell.down = null;
+				}
+			}
 		}
 	}
 

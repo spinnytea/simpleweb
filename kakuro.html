@@ -28,9 +28,9 @@
 					<div ng-if="cell.type === 'none'" class="none"></div>
 					<div ng-if="cell.type === 'empty'" class="empty" ng-class="{ 'hasNum': !!(cell.right || cell.down) }">
 						<div class="right" ng-bind="cell.right"
-							ng-class="{ 'invalid': (cell.errors['right-no-space'] || cell.errors['right-sum']) }"></div>
+							ng-class="{ 'invalid': (cell.errors['right-no-space'] || cell.errors['right-sum'] || cell.errors['right-number-missing']) }"></div>
 						<div class="down" ng-bind="cell.down"
-							ng-class="{ 'invalid': (cell.errors['down-no-space'] || cell.errors['down-sum']) }"></div>
+							ng-class="{ 'invalid': (cell.errors['down-no-space'] || cell.errors['down-sum'] || cell.errors['down-number-missing']) }"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !cell.value" class="cell-possible">
 						<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>
@@ -66,6 +66,8 @@
 			<p ng-if="body.focus.cell.errors['down-no-space']"><span class="error-label">down-no-space</span> There isn't enough room for a col.</p>
 			<p ng-if="body.focus.cell.errors['right-sum']"><span class="error-label">right-sum</span> The row is completed and the values don't match the advertised sum.</p>
 			<p ng-if="body.focus.cell.errors['down-sum']"><span class="error-label">down-sum</span> The col is completed and the values don't match the advertised sum.</p>
+			<p ng-if="body.focus.cell.errors['right-number-missing']"><span class="error-label">right-number-missing</span> The row needs a sum since it is not empty.</p>
+			<p ng-if="body.focus.cell.errors['down-number-missing']"><span class="error-label">down-number-missing</span> The col needs a sum since it is not empty.</p>
 
 			<div ng-if="body.focus.cell.type === 'empty'">
 				<div ng-if="!!body.focus.cell.right">

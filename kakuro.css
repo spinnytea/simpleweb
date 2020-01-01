@@ -204,6 +204,9 @@ table#board td > * {
 	grid-template-rows: 1fr;
 	grid-template-columns: 1fr;
 }
+#board .cell:not(.invalid) {
+	color: var(--darkPrimaryColor);
+}
 
 #board .cell-possible {
 	color: var(--secondaryTextColor);
