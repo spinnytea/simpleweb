@@ -65,6 +65,7 @@
 				<span ng-bind="str"></span>
 			</p>
 
+			<!-- REVIEW this whole row/col layout is bad AND it's duped for empty & cell -->
 			<div ng-if="body.focus.cell.type === 'empty'">
 				<div ng-if="!!body.focus.cell.right">
 					<h3>Row</h3>
@@ -101,7 +102,7 @@
 			</div>
 		</div>
 
-		<div ng-if="body.showDemo">
+		<div id="demo-stuff" ng-if="body.showDemo">
 			<h2>Demo Stuff</h2>
 
 			<form name="makeBoardForm">

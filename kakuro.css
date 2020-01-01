@@ -236,6 +236,10 @@ table#board td > * {
 	margin-bottom: 0.25em;
 }
 
+#demo-stuff {
+	margin-bottom: -0.5em; /* undo ths extra space from the buttons */
+}
+
 #keys-summary dl dt {
 	width: 8ch;
 	display: inline-block;
