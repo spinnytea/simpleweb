@@ -1,0 +1,12 @@
+/* Palette copied from material pallet (the dark them it uses) - materialpalette.com */
+
+body {
+	--darkPrimaryColor:   #d1c4e9;
+	--primaryColor:       #bb86fc;
+	--lightPrimaryColor:  #7e57c2;
+	--textPrimaryColor:   #374046;
+	--accentColor:        #FFD54F;
+	--primaryTextColor:   #f5f5f5;
+	--secondaryTextColor: #B6B6B6;
+	--dividerColor:       #727272;
+}
