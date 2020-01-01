@@ -60,14 +60,10 @@
 		<div>
 			<h2>Focus <small ng-bind="body.focus.cell.type"></small></h2>
 
-			<p ng-if="body.focus.cell.errors['value-impossible']"><span class="error-label">value-impossible</span> The specified value is not one of the possible values.</p>
-			<p ng-if="body.focus.cell.errors['value-duplicate']"><span class="error-label">value-duplicate</span> The specified value is used more than once in it's row/col.</p>
-			<p ng-if="body.focus.cell.errors['right-no-space']"><span class="error-label">right-no-space</span> There isn't enough room for a row.</p>
-			<p ng-if="body.focus.cell.errors['down-no-space']"><span class="error-label">down-no-space</span> There isn't enough room for a col.</p>
-			<p ng-if="body.focus.cell.errors['right-sum']"><span class="error-label">right-sum</span> The row is completed and the values don't match the advertised sum.</p>
-			<p ng-if="body.focus.cell.errors['down-sum']"><span class="error-label">down-sum</span> The col is completed and the values don't match the advertised sum.</p>
-			<p ng-if="body.focus.cell.errors['right-number-missing']"><span class="error-label">right-number-missing</span> The row needs a sum since it is not empty.</p>
-			<p ng-if="body.focus.cell.errors['down-number-missing']"><span class="error-label">down-number-missing</span> The col needs a sum since it is not empty.</p>
+			<p ng-repeat="(key, str) in body.focus.cell.errors" ng-if="!!str">
+				<span class="error-label" ng-bind="key"></span>
+				<span ng-bind="str"></span>
+			</p>
 
 			<div ng-if="body.focus.cell.type === 'empty'">
 				<div ng-if="!!body.focus.cell.right">

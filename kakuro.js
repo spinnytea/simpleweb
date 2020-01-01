@@ -484,41 +484,41 @@
 		forEachBoard(board, validateCell);
 	}
 	function validateCell(cell) {
-		// NOTE don't forget text feedback
 		cell.errors['value-impossible'] = false;
 		cell.errors['value-duplicate'] = false;
 		if(cell.type === 'cell') {
 			if(cell.value !== null) {
 				// value-impossible
 				// the value isn't one of the possible values
-				cell.errors['value-impossible'] = !cell.possible[cell.value];
+				if(!cell.possible[cell.value]) {
+					cell.errors['value-impossible'] = 'The specified value is not one of the possible values.';
+				}
 
 				// value-duplicate
 				// the value is already used in a row or column
 				let next = cell.$right;
 				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
-					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					if(next.value === cell.value) cell.errors['value-duplicate'] = 'The specified value is used more than once in it\'s row/col.';
 					next = next.$right;
 				}
 				next = cell.$left;
 				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
-					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					if(next.value === cell.value) cell.errors['value-duplicate'] = 'The specified value is used more than once in it\'s row/col.';
 					next = next.$left;
 				}
 				next = cell.$up;
 				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
-					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					if(next.value === cell.value) cell.errors['value-duplicate'] = 'The specified value is used more than once in it\'s row/col.';
 					next = next.$up;
 				}
 				next = cell.$down;
 				while(next && next.type === 'cell' && !cell.errors['value-duplicate']) {
-					if(next.value === cell.value) cell.errors['value-duplicate'] = true;
+					if(next.value === cell.value) cell.errors['value-duplicate'] = 'The specified value is used more than once in it\'s row/col.';
 					next = next.$down;
 				}
 			}
 		}
 
-		// NOTE don't forget text feedback
 		cell.errors['right-no-space'] = false;
 		cell.errors['down-no-space'] = false;
 		cell.errors['right-sum'] = false;
@@ -529,19 +529,19 @@
 			// right-no-space
 			// if a 'right' sum is specified, but there isn't room for it
 			if(!!cell.right && cell.rightLength < 2) {
-				cell.errors['right-no-space'] = true;
+				cell.errors['right-no-space'] = 'There isn\'t enough room for a row.';
 			}
 
 			// down-no-space
 			// if a 'down' sum is specified, but there isn't room for it
 			if(!!cell.down && cell.downLength < 2) {
-				cell.errors['down-no-space'] = true;
+				cell.errors['down-no-space'] = 'There isn\'t enough room for a col.';
 			}
 
 			// right-sum
 			// if a row is completed and the numbers don't add up to how it's labeled
 			let rightSum = null;
-			if(!!cell.right) {
+			if(!!cell.right && !!cell.rightLength) {
 				rightSum = 0;
 				marchAlongCell(cell, '$right', function(next) {
 					if(!!next.value) {
@@ -552,12 +552,14 @@
 					}
 				});
 			}
-			cell.errors['right-sum'] = (rightSum !== null && rightSum !== cell.right);
+			if(rightSum !== null && rightSum !== cell.right) {
+				cell.errors['right-sum'] = 'The row is completed and the values don\'t match the advertised sum.';
+			}
 
 			// down-sum
 			// if a col is completed and the numbers don't add up to how it's labeled
 			let downSum = null;
-			if(!!cell.down) {
+			if(!!cell.down && !!cell.downLength) {
 				downSum = 0;
 				marchAlongCell(cell, '$down', function(next) {
 					if(!!next.value) {
@@ -568,13 +570,15 @@
 					}
 				});
 			}
-			cell.errors['down-sum'] = (downSum !== null && downSum !== cell.down);
+			if(downSum !== null && downSum !== cell.down) {
+				cell.errors['down-sum'] = 'The col is completed and the values don\'t match the advertised sum.';
+			}
 
 			// right-number-missing
 			// if there is an empty with no right sum, and to the right is a cell
 			if(!cell.right) {
 				if(cell.$right && cell.$right.type === 'cell') {
-					cell.errors['right-number-missing'] = true;
+					cell.errors['right-number-missing'] = 'The row needs a sum since it is not empty.';
 					cell.right = 0;
 				} else {
 					cell.right = null;
@@ -585,7 +589,7 @@
 			// if there is an empty with no down sum, and to the down is a cell
 			if(!cell.down) {
 				if(cell.$down && cell.$down.type === 'cell') {
-					cell.errors['down-number-missing'] = true;
+					cell.errors['down-number-missing'] = 'The col needs a sum since it is not empty.';
 					cell.down = 0;
 				} else {
 					cell.down = null;
