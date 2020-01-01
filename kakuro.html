@@ -102,6 +102,13 @@
 			</div>
 		</div>
 
+		<div ng-if="body.showDemo">
+			<h2>Demo Stuff</h2>
+
+			<button type="button" class="btn-primary" ng-repeat="(name, def) in body.PREDEFINED_BOARDS"
+				ng-bind="name" ng-click="body.loadBoard(def)"></button>
+		</div>
+
 		<div id="keys-summary">
 			<h2>Keys</h2>
 			<dl>

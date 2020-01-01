@@ -56,6 +56,9 @@ button {
 	font-weight: bold;
 	cursor: pointer;
 }
+button + button {
+	margin-left: 0.5em;
+}
 .btn-primary {
 	color: var(--textPrimaryColor);
 	background-color: var(--primaryColor);

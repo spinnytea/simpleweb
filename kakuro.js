@@ -5,60 +5,69 @@
 
 	// TEST high level integration test that solves a very simple board
 	//  - just to make sure that the game works
+	// TODO about dialog
+	//  - make a little description of what kakuro is for new players
+	//  - maybe link to wikipedia?
 	const module = angular.module('kakuro', []);
 	module.controller('kakuro.body.controller', [
 		function SimpleWebBodyController() {
 			const body = this;
+			body.showDemo = true; // XXX should showDemo always be on?
+			body.PREDEFINED_BOARDS = PREDEFINED_BOARDS;
 
-			// TODO demo modes
-			//  - we shouldn't have to pick to load/make a board in source
-			//  - make a ui control to let us do this setup
-
-			// TODO about dialog
-			//  - make a little description of what kakuro is for new players
-			//  - maybe link to wikipedia?
-
-			/* either make new */
-			// const board = body.board = makeBoard(10, 8);
-			// body.showSetup = true;
-
-			/* or load existing */
-			const board = body.board = loadBoard(TEN_EIGHT_MEDIUM);
-			body.showSetup = false;
-
-			/* and then setup */
-			recomputeMetadata(board);
-			validateBoard(board);
-
-			const focus = body.focus = {
-				x: 0,
-				y: 0,
-				cell: board[0][0],
+			// demo config
+			let focus;
+			let board;
+			body.showSetup = true;
+			body.loadBoard = function(def) {
+				board = body.board = loadBoard(def);
+				body.showSetup = false;
+				initGame();
 			};
+			body.makeBoard = function() { // TODO button on ui
+				board = body.board = makeBoard(3, 3); // TODO input on ui
+				body.showSetup = true;
+				initGame();
+			};
+			body.makeBoard();
+
+			function initGame() {
+				focus = body.focus = {
+					x: 0,
+					y: 0,
+					cell: board[0][0],
+				};
+				recomputeMetadata(board);
+				validateBoard(board);
+				heuristic(board);
+			}
 
 			body.handleKeys = function handleKeys($event) {
 				switch($event.key) {
-					case 'ArrowDown': moveFocusDown(); break;
-					case 'ArrowRight': moveFocusRight(); break;
-					case 'ArrowUp': moveFocusUp(); break;
-					case 'ArrowLeft': moveFocusLeft(); break;
-					case 'r': heuristic(board); break;
+					case 'ArrowDown': stop($event); moveFocusDown(); break;
+					case 'ArrowRight': stop($event); moveFocusRight(); break;
+					case 'ArrowUp': stop($event); moveFocusUp(); break;
+					case 'ArrowLeft': stop($event); moveFocusLeft(); break;
+					case 'r': stop($event); heuristic(board); break;
 					case 'e':
+						stop($event);
 						setEmpty(focus.cell);
 						recomputeMetadata(board);
-						validateBoard(board);
 						if(!!board.$stats.noneCount) moveFocusDown();
+						validateBoard(board);
 						break;
 					case 'c':
+						stop($event);
 						setCell(focus.cell);
 						recomputeMetadata(board);
-						validateBoard(board);
 						if(!!board.$stats.noneCount) moveFocusDown();
 						else heuristic(board);
+						validateBoard(board);
 						break;
 					case '1': case '2': case '3':
 					case '4': case '5': case '6':
 					case '7': case '8': case '9':
+						stop($event);
 						setCellValue(focus.cell, +$event.key);
 						heuristic(board);
 						validateBoard(board);
@@ -66,6 +75,10 @@
 					// default: console.log($event.key); break;
 				}
 			};
+			function stop(e) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
 			function moveFocusDown(again) {
 				focus.y += 1;
 				if(focus.y >= board.length) {
@@ -435,6 +448,7 @@
 
 	/* given that we've already paired down the possible values, only lists that have combinations of the related possible values */
 	/* e.g. 7 [1, 2, 3, 4, 5] [4, 5, 6] ~ this should take out the 4, 5 from the first cell since there is no appropriate counterpart */
+	/* e.g. 9 [7, 8] [2, 3, 5, 6, 7] ~ this should be 9 [7] [2] */
 	// TODO heuristic_usePossible
 
 	/* if two cells have can only have the same 2 numbers, then no other cell can use those two numbers */
@@ -589,9 +603,11 @@
 	};
 
 	/* super simple sample board */
-	// const TEMPLATE = JSON.parse('');
-	const THREE_BY_THREE = JSON.parse('[[{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":3}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":4},{"type":"cell"},{"type":"cell"}]]');
-	const SEVEN_NINE_EASY = JSON.parse('[[{"type":"empty"},{"type":"empty","down":14},{"type":"empty","down":4},{"type":"empty","down":19},{"type":"empty"},{"type":"empty","down":11},{"type":"empty","down":3}],[{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":17},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":19},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":7,"down":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":26},{"type":"empty","down":17}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":15},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}]]');
-	const TEN_EIGHT_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"empty"},{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":9},{"type":"empty","down":16},{"type":"empty","down":23},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":26,"down":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty","right":19,"down":3},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":3}],[{"type":"empty","right":18},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":6},{"type":"empty","right":7,"down":3},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":4},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":4},{"type":"empty","right":6,"down":14},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":16},{"type":"empty","down":10}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":5,"down":9},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14},{"type":"empty","right":18,"down":12},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty","right":28},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"},{"type":"empty"}]]');
-	const SIXTEEN_FOURTEEN_MEDIUM = JSON.parse('[[{"type":"empty"},{"type":"empty","down":17},{"type":"empty","down":21},{"type":"empty","down":17},{"type":"empty","down":15},{"type":"empty","down":23},{"type":"empty","down":3},{"type":"empty"},{"type":"empty","down":8},{"type":"empty","down":23},{"type":"empty","down":7},{"type":"empty"},{"type":"empty","down":21},{"type":"empty","down":30}],[{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":33},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":10,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":24,"down":34},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":26},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":10},{"type":"empty","down":22},{"type":"empty","down":23}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":34},{"type":"cell"},{"type":"cell"},{"type":"empty","right":34,"down":20},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":22,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":29},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":41,"down":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":6},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":23},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":21},{"type":"empty","down":6}],[{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":31},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":23},{"type":"empty","down":14},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":15,"down":26},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":8},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":20},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":5},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":15},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14}],[{"type":"empty","right":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}]]');
+	const PREDEFINED_BOARDS = {
+		// 'Template': JSON.parse(''),
+		'3x3': JSON.parse('[[{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":3}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":4},{"type":"cell"},{"type":"cell"}]]'),
+		'9x7 Easy': JSON.parse('[[{"type":"empty"},{"type":"empty","down":14},{"type":"empty","down":4},{"type":"empty","down":19},{"type":"empty"},{"type":"empty","down":11},{"type":"empty","down":3}],[{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":17},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":19},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":7,"down":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":26},{"type":"empty","down":17}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":15},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}]]'),
+		'10x8 Medium': JSON.parse('[[{"type":"empty"},{"type":"empty"},{"type":"empty"},{"type":"empty","down":12},{"type":"empty","down":9},{"type":"empty","down":16},{"type":"empty","down":23},{"type":"empty"}],[{"type":"empty"},{"type":"empty"},{"type":"empty","right":26,"down":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty","right":19,"down":3},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":3}],[{"type":"empty","right":18},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":6},{"type":"empty","right":7,"down":3},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":4},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":4},{"type":"empty","right":6,"down":14},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":16},{"type":"empty","down":10}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":5,"down":9},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14},{"type":"empty","right":18,"down":12},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"}],[{"type":"empty"},{"type":"empty","right":28},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty"},{"type":"empty"}]]'),
+		'16x14 Medium': JSON.parse('[[{"type":"empty"},{"type":"empty","down":17},{"type":"empty","down":21},{"type":"empty","down":17},{"type":"empty","down":15},{"type":"empty","down":23},{"type":"empty","down":3},{"type":"empty"},{"type":"empty","down":8},{"type":"empty","down":23},{"type":"empty","down":7},{"type":"empty"},{"type":"empty","down":21},{"type":"empty","down":30}],[{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":33},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","right":10,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":7,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":24,"down":34},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":26},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":12},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":10},{"type":"empty","down":22},{"type":"empty","down":23}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":34},{"type":"cell"},{"type":"cell"},{"type":"empty","right":34,"down":20},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":24},{"type":"empty","right":22,"down":19},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":16,"down":29},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":16},{"type":"cell"},{"type":"cell"},{"type":"empty","right":41,"down":16},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":6},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":30},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":17,"down":23},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":9},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":21},{"type":"empty","down":6}],[{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":6},{"type":"cell"},{"type":"cell"},{"type":"empty","right":10,"down":31},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty"},{"type":"empty","down":23},{"type":"empty","down":14},{"type":"empty","right":23},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":15,"down":26},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":3},{"type":"cell"},{"type":"cell"},{"type":"empty","right":3,"down":8},{"type":"cell"},{"type":"cell"},{"type":"empty","right":21,"down":8},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":4,"down":20},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":24},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6,"down":5},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":30,"down":15},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","down":14}],[{"type":"empty","right":21},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":39},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}],[{"type":"empty","right":11},{"type":"cell"},{"type":"cell"},{"type":"empty","right":6},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"empty","right":22},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"},{"type":"cell"}]]'),
+	};
 })();
