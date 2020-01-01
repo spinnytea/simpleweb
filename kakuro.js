@@ -14,6 +14,7 @@
 			const body = this;
 			body.showDemo = true; // XXX should showDemo always be on?
 			body.PREDEFINED_BOARDS = PREDEFINED_BOARDS;
+			body.formData = { height: 3, width: 3 };
 
 			// demo config
 			let focus;
@@ -24,8 +25,8 @@
 				body.showSetup = false;
 				initGame();
 			};
-			body.makeBoard = function() { // TODO button on ui
-				board = body.board = makeBoard(3, 3); // TODO input on ui
+			body.makeBoard = function() {
+				board = body.board = makeBoard(body.formData.height, body.formData.width);
 				body.showSetup = true;
 				initGame();
 			};
@@ -43,6 +44,11 @@
 			}
 
 			body.handleKeys = function handleKeys($event) {
+				if($('input').is(':focus')) {
+					// defer to input
+					return;
+				}
+
 				switch($event.key) {
 					case 'ArrowDown': stop($event); moveFocusDown(); break;
 					case 'ArrowRight': stop($event); moveFocusRight(); break;
