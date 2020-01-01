@@ -455,6 +455,7 @@
 	/* given that we've already paired down the possible values, only lists that have combinations of the related possible values */
 	/* e.g. 7 [1, 2, 3, 4, 5] [4, 5, 6] ~ this should take out the 4, 5 from the first cell since there is no appropriate counterpart */
 	/* e.g. 9 [7, 8] [2, 3, 5, 6, 7] ~ this should be 9 [7] [2] */
+	/* e.g. 24 [8, 9] [7, 8, 9] [8, 9] ~ the middle one has to be 7 since 24 HAS to have 7 8 9 */
 	// TODO heuristic_usePossible
 
 	/* if two cells have can only have the same 2 numbers, then no other cell can use those two numbers */
