@@ -10,7 +10,8 @@
 	//  - maybe link to wikipedia?
 	const module = angular.module('kakuro', []);
 	module.controller('kakuro.body.controller', [
-		function SimpleWebBodyController() {
+		'$timeout',
+		function SimpleWebBodyController($timeout) {
 			const body = this;
 			body.showDemo = true; // XXX should showDemo always be on?
 			body.PREDEFINED_BOARDS = PREDEFINED_BOARDS;
@@ -120,9 +121,10 @@
 
 			body.possibleValues = possibleValues;
 
+			body.saveFeedback = false;
 			body.save = function() {
 				body.saveStr = JSON.stringify(saveBoard(board));
-				setTimeout(function() {
+				$timeout(function() {
 					/* Get the text field */
 					const copyText = document.getElementById("copyText");
 
@@ -133,7 +135,10 @@
 					/* Copy the text inside the text field */
 					document.execCommand("copy");
 
-					// TODO ui feedback, "copied to clipboard"
+					body.saveFeedback = true;
+					$timeout(function() {
+						body.saveFeedback = false;
+					}, 500);
 				});
 			};
 		}
