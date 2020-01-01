@@ -1,0 +1,13 @@
+{
+  "name": "simpleweb",
+  "version": "1.0.0",
+  "description": "super simple web application",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2"
+  }
+}
