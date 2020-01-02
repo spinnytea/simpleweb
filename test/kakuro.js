@@ -1,33 +1,50 @@
 const expect = require('chai').expect;
-
-const angular = require('./angularMock');
 const kakuro = require('../lib/kakuro');
+
+// load some globals by side effect
+require('./angularMock');
+require('../lib/possible_values');
+
 
 describe('kakuro', function() {
 	/**
 	 * create a single cell for testing
+	 * possible should be a list of numbers that are set to true
+	 * if possible is not provided, then ALL will be set to true
+	 *
 	 * NOTE this is a test double of what we expect to see on the board
 	 */
 	function createCell(possible) {
 		const $cell = { type: 'cell', value: null, possible: {} };
-		for(let n = 1; n <= 9; n++) $cell.possible[n] = false;
-		possible.forEach((n) => $cell.possible[n] = true);
+		for(let n = 1; n <= 9; n++) $cell.possible[n] = !possible;
+		if(possible) possible.forEach((n) => $cell.possible[n] = true);
 		return $cell;
 	}
 
 	/**
 	 * create a row and col for testing
+	 * possible should be a list of list of possible numbers (e.g. [[1, 2], [1, 2]])
+	 * possible can be a number, in which case there will be that many cells and ALL numbers will be possible
+	 *
 	 * NOTE this is a test double of what we expect to see on the board
 	 */
 	function createRow(sum, possible) {
 		const $head = { type: 'empty', right: sum, down: sum }
 		let $right = $head;
 		let $down = $head;
-		possible.forEach(function(nums) {
-			// create another cell
-			$right = $right.$right = createCell(nums);
-			$down = $down.$down = createCell(nums);
-		});
+		if(typeof possible === 'object') {
+			$head.rightLength = $head.downLength = possible.length;
+			possible.forEach(function(nums) {
+				$right = $right.$right = createCell(nums);
+				$down = $down.$down = createCell(nums);
+			});
+		} else if(typeof possible === 'number') {
+			$head.rightLength = $head.downLength = possible;
+			for(let i = 0; i < possible; i++) {
+				$right = $right.$right = createCell();
+				$down = $down.$down = createCell();
+			}
+		}
 		return $head;
 	}
 
@@ -52,6 +69,7 @@ describe('kakuro', function() {
 			'heuristic_reset',
 			'heuristic_value',
 			'heuristic_lengthAndSum',
+			'heuristic_usePossible',
 		]);
 	});
 
@@ -69,11 +87,12 @@ describe('kakuro', function() {
 
 		describe('value', function() {
 			const value = kakuro.heuristic_value;
+
 			it('simple', function() {
 				const $head = createRow(3, [[1, 2], [1, 2]]);
 
 				expect($head.$right.$right.possible[2]).to.equal(true);
-				expect($head.$down.$down.possible[2]).to.equal(true);
+				expect($head.$down.$down.possible[1]).to.equal(true);
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1, 2]]);
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [1, 2]]);
 
@@ -81,20 +100,152 @@ describe('kakuro', function() {
 				value($head);
 
 				expect($head.$right.$right.possible[2]).to.equal(false);
-				expect($head.$down.$down.possible[2]).to.equal(true);
+				expect($head.$down.$down.possible[1]).to.equal(true);
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1]]);
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [1, 2]]);
 
-				$head.$down.value = 2;
+				$head.$down.value = 1;
 				value($head);
 
 				expect($head.$right.$right.possible[2]).to.equal(false);
-				expect($head.$down.$down.possible[2]).to.equal(false);
+				expect($head.$down.$down.possible[1]).to.equal(false);
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1]]);
-				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [1]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [2]]);
 			});
 		}); // end value
 
-		it('lengthAndSum');
+		describe('lengthAndSum', function() {
+			const lengthAndSum = kakuro.heuristic_lengthAndSum;
+
+			it('one way low', function() {
+				const $head = createRow(3, 2);
+				// this row has a minimal set of numbers
+				expect(global.POSSIBLE_VALUES[2][3]).to.deep.equal([
+					[1, 2],
+				]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+
+				lengthAndSum($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1, 2]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [1, 2]]);
+			});
+
+			it('one way hight', function() {
+				const $head = createRow(23, 3);
+				// this row has a minimal set of numbers
+				expect(global.POSSIBLE_VALUES[3][23]).to.deep.equal([
+					[6, 8, 9],
+				]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+
+				lengthAndSum($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[6, 8, 9], [6, 8, 9], [6, 8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[6, 8, 9], [6, 8, 9], [6, 8, 9]]);
+			});
+
+			it('two ways, simple', function() {
+				const $head = createRow(6, 2);
+				// this row as a simple but mixed set of numbers in it
+				expect(global.POSSIBLE_VALUES[2][6]).to.deep.equal([
+					[1, 5],
+					[2, 4],
+				]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+
+				lengthAndSum($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 4, 5], [1, 2, 4, 5]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 4, 5], [1, 2, 4, 5]]);
+			});
+
+			it('all values', function() {
+				const $head = createRow(16, 3);
+				// this row could have any number in it
+				expect(global.POSSIBLE_VALUES[3][18]).to.deep.equal([
+					[1, 8, 9],
+					[2, 7, 9],
+					[3, 6, 9],
+					[3, 7, 8],
+					[4, 5, 9],
+					[4, 6, 8],
+					[5, 6, 7],
+				]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+
+				lengthAndSum($head);
+
+				// this doesn't actually change anything
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
+			});
+		}); // end lengthAndSum
+
+		describe('usePossible', function() {
+			const usePossible = kakuro.heuristic_usePossible;
+
+			/* e.g. 6 [2, 3] [1, 2] [1] ~ as simple as it can get */
+			it('exhibit a, simple', function() {
+				const $head = createRow(6, [[2, 3], [1, 2], [1]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[2, 3], [1, 2], [1]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[2, 3], [1, 2], [1]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[3], [2], [1]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[3], [2], [1]]);
+			});
+
+			/* e.g. 7 [1, 2, 3, 4, 5] [4, 5, 6] ~ this should take out the 4, 5 from the first cell since there is no appropriate counterpart */
+			it('exhibit b, prune first', function() {
+				const $head = createRow(7, [[1, 2, 3, 4, 5], [4, 5, 6]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5], [4, 5, 6]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5], [4, 5, 6]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3], [4, 5, 6]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3], [4, 5, 6]]);
+			});
+
+			/* e.g. 9 [7, 8] [2, 3, 5, 6, 7] ~ this should be 9 [7] [2] */
+			it('exhibit c, prune second', function() {
+				const $head = createRow(9, [[7, 8], [2, 3, 4, 5, 6, 7]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[7, 8], [2, 3, 4, 5, 6, 7]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[7, 8], [2, 3, 4, 5, 6, 7]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[7], [2]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[7], [2]]);
+			});
+
+			/* e.g. 24 [8, 9] [7, 8, 9] [8, 9] ~ the middle one has to be 7 since 24 HAS to have 7 8 9 */
+			it('exhibit d, prune middle', function() {
+				const $head = createRow(24, [[8, 9], [7, 8, 9], [8, 9]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[8, 9], [7, 8, 9], [8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[8, 9], [7, 8, 9], [8, 9]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[8, 9], [7], [8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[8, 9], [7], [8, 9]]);
+			});
+
+			// TODO find a longer / more complex example
+		}); // end usePossible
 	}); // end heuristic
 }); // end kakuro

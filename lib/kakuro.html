@@ -21,6 +21,8 @@
 
 	<div class="loading-message" ng-show="::false">Doing math...</div>
 
+	<div class="success" ng-if="body.board.$stats.isFinished">&#x1F389; Congratulations!! &#x1F38A;</div>
+
 	<div id="board-wrapper" ng-cloak>
 		<table id="board">
 			<tr data-ng-repeat="row in body.board">
@@ -124,7 +126,9 @@
 				<dt>e</dt><dd>Specify an empty cell, a cell that cannot have numbers. This will prompt for right/down sums.</dd>
 				<dt>c</dt><dd>Specify a cell as one that can have a value. This will clear the number already used.</dd>
 				<dt>r</dt><dd>Reset the possible values and run the base heuristic again.</dd>
+				<dt>h</dt><dd>Run experimental heuristic. This won't be run in the normal loop.</dd>
 				<dt>1 - 9</dt><dd>Set the value of a cell (only for ones that can have a number).</dd>
+				<dt>del</dt><dd>Clear the value of a cell.</dd>
 			</dl>
 		</div>
 	</div>

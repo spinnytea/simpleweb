@@ -105,6 +105,7 @@ body {
 	grid-template-areas:
 		"title title"
 		"loading loading"
+		"success success"
 		"board info";
 }
 #title {
@@ -112,6 +113,10 @@ body {
 	text-align: center;
 }
 .loading-message {
+	grid-area: loading;
+	text-align: center;
+}
+.success {
 	grid-area: loading;
 	text-align: center;
 }
@@ -130,6 +135,11 @@ body {
 .loading-message {
 	font-size: 4em;
 	color: var(--accentColor);
+}
+.success {
+	font-size: 4em;
+	text-decoration: underline;
+	margin-bottom: 0.5em;
 }
 
 /* style board */
