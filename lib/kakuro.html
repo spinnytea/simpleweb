@@ -21,6 +21,8 @@
 
 	<div class="loading-message" ng-show="::false">Doing math...</div>
 
+	<div class="success" ng-if="body.board.$stats.isFinished">&#x1F389; Congratulations!! &#x1F38A;</div>
+
 	<div id="board-wrapper" ng-cloak>
 		<table id="board">
 			<tr data-ng-repeat="row in body.board">
