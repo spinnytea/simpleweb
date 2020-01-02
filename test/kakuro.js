@@ -193,8 +193,21 @@ describe('kakuro', function() {
 		describe('usePossible', function() {
 			const usePossible = kakuro.heuristic_usePossible;
 
+			/* e.g. 6 [2, 3] [1, 2] [1] ~ as simple as it can get */
+			it('exhibit a, simple', function() {
+				const $head = createRow(6, [[2, 3], [1, 2], [1]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[2, 3], [1, 2], [1]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[2, 3], [1, 2], [1]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[3], [2], [1]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[3], [2], [1]]);
+			});
+
 			/* e.g. 7 [1, 2, 3, 4, 5] [4, 5, 6] ~ this should take out the 4, 5 from the first cell since there is no appropriate counterpart */
-			it.skip('exhibit a, prune first', function() {
+			it('exhibit b, prune first', function() {
 				const $head = createRow(7, [[1, 2, 3, 4, 5], [4, 5, 6]]);
 
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5], [4, 5, 6]]);
@@ -207,10 +220,30 @@ describe('kakuro', function() {
 			});
 
 			/* e.g. 9 [7, 8] [2, 3, 5, 6, 7] ~ this should be 9 [7] [2] */
-			it('exhibit b, prune second');
+			it('exhibit c, prune second', function() {
+				const $head = createRow(9, [[7, 8], [2, 3, 4, 5, 6, 7]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[7, 8], [2, 3, 4, 5, 6, 7]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[7, 8], [2, 3, 4, 5, 6, 7]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[7], [2]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[7], [2]]);
+			});
 
 			/* e.g. 24 [8, 9] [7, 8, 9] [8, 9] ~ the middle one has to be 7 since 24 HAS to have 7 8 9 */
-			it('exhibit c, prune middle');
+			it('exhibit d, prune middle', function() {
+				const $head = createRow(24, [[8, 9], [7, 8, 9], [8, 9]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[8, 9], [7, 8, 9], [8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[8, 9], [7, 8, 9], [8, 9]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[8, 9], [7], [8, 9]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[8, 9], [7], [8, 9]]);
+			});
 
 			// TODO find a longer / more complex example
 		}); // end usePossible
