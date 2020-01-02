@@ -69,6 +69,7 @@ describe('kakuro', function() {
 			'heuristic_reset',
 			'heuristic_value',
 			'heuristic_lengthAndSum',
+			'heuristic_usePossible',
 		]);
 	});
 
@@ -188,5 +189,30 @@ describe('kakuro', function() {
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 5, 6, 7, 8, 9]]);
 			});
 		}); // end lengthAndSum
+
+		describe('usePossible', function() {
+			const usePossible = kakuro.heuristic_usePossible;
+
+			/* e.g. 7 [1, 2, 3, 4, 5] [4, 5, 6] ~ this should take out the 4, 5 from the first cell since there is no appropriate counterpart */
+			it.skip('exhibit a, prune first', function() {
+				const $head = createRow(7, [[1, 2, 3, 4, 5], [4, 5, 6]]);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3, 4, 5], [4, 5, 6]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3, 4, 5], [4, 5, 6]]);
+
+				usePossible($head);
+
+				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2, 3], [4, 5, 6]]);
+				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2, 3], [4, 5, 6]]);
+			});
+
+			/* e.g. 9 [7, 8] [2, 3, 5, 6, 7] ~ this should be 9 [7] [2] */
+			it('exhibit b, prune second');
+
+			/* e.g. 24 [8, 9] [7, 8, 9] [8, 9] ~ the middle one has to be 7 since 24 HAS to have 7 8 9 */
+			it('exhibit c, prune middle');
+
+			// TODO find a longer / more complex example
+		}); // end usePossible
 	}); // end heuristic
 }); // end kakuro
