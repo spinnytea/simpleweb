@@ -78,20 +78,20 @@
 			<div ng-if="body.focus.cell.type === 'empty'">
 				<div ng-if="!!body.focus.cell.right">
 					<h3>Row</h3>
-					<div empty-possible-values head="body.focus.cell" dir="right"></div>
+					<div empty-possible-values cell="body.focus.cell" dir="right"></div>
 				</div>
 
 				<div ng-if="!!body.focus.cell.down">
 					<h3>Col</h3>
-					<div empty-possible-values head="body.focus.cell" dir="down"></div>
+					<div empty-possible-values cell="body.focus.cell" dir="down"></div>
 				</div>
 			</div>
 			<div ng-if="body.focus.cell.type === 'cell'">
 				<h3>Row</h3>
-				<div empty-possible-values head="body.focus.cell.$rightHead" dir="right"></div>
+				<div empty-possible-values cell="body.focus.cell" dir="right"></div>
 
 				<h3>Col</h3>
-				<div empty-possible-values head="body.focus.cell.$downHead" dir="down"></div>
+				<div empty-possible-values cell="body.focus.cell" dir="down"></div>
 			</div>
 		</div>
 

@@ -25,6 +25,11 @@ h1 {
 p {
 	margin-bottom: 0.5em;
 }
+ul {
+	margin-bottom: 0.5em;
+	margin-left: 1ch;
+	list-style-type: none;
+}
 :focus {
 	outline-color: var(--darkPrimaryColor);
 }
@@ -235,6 +240,16 @@ table#board td > * {
 }
 
 /* style right stuff */
+
+[empty-possible-values] .num.possible {
+	font-weight: bold;
+	color: var(--primaryColor);
+}
+[empty-possible-values] .num + .num::before {
+	content: ", ";
+	font-weight: normal;
+	color: var(--primaryTextColor);
+}
 
 #extra-info {
 	font-size: calc(var(--fontHeight) * 1.5);
