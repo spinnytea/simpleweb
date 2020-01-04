@@ -75,40 +75,23 @@
 				<span ng-bind="str"></span>
 			</p>
 
-			<!-- REVIEW this whole row/col layout is bad AND it's duped for empty & cell -->
 			<div ng-if="body.focus.cell.type === 'empty'">
 				<div ng-if="!!body.focus.cell.right">
 					<h3>Row</h3>
-					<p>
-						Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.right"></span>,
-						Len: <span class="badge badge-primary" ng-bind="body.focus.cell.rightLength"></span>
-					</p>
-					<p>{{body.possibleValues(body.focus.cell, 'right')}}</p>
+					<div empty-possible-values head="body.focus.cell" dir="right"></div>
 				</div>
 
 				<div ng-if="!!body.focus.cell.down">
 					<h3>Col</h3>
-					<p>
-						Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.down"></span>,
-						Len: <span class="badge badge-primary" ng-bind="body.focus.cell.downLength"></span>
-					</p>
-					<p>{{body.possibleValues(body.focus.cell, 'down')}}</p>
+					<div empty-possible-values head="body.focus.cell" dir="down"></div>
 				</div>
 			</div>
 			<div ng-if="body.focus.cell.type === 'cell'">
 				<h3>Row</h3>
-				<p>
-					Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.$rightHead.right"></span>,
-					Len: <span class="badge badge-primary" ng-bind="body.focus.cell.$rightHead.rightLength"></span>
-				</p>
-				<p>{{body.possibleValues(body.focus.cell.$rightHead, 'right')}}</p>
+				<div empty-possible-values head="body.focus.cell.$rightHead" dir="right"></div>
 
 				<h3>Col</h3>
-				<p>
-					Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.$downHead.down"></span>,
-					Len: <span class="badge badge-primary" ng-bind="body.focus.cell.$downHead.downLength"></span>
-				</p>
-				<p>{{body.possibleValues(body.focus.cell.$downHead, 'down')}}</p>
+				<div empty-possible-values head="body.focus.cell.$downHead" dir="down"></div>
 			</div>
 		</div>
 
