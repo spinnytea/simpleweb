@@ -35,7 +35,15 @@
 							ng-class="{ 'invalid': (cell.errors['down-no-space'] || cell.errors['down-sum'] || cell.errors['down-number-missing']) }"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !cell.value" class="cell-possible">
-						<div ng-repeat="(n, p) in cell.possible" ng-bind="p ? n : ''"></div>
+						<div ng-bind="cell.possible.has(1) ? 1 : ''"></div>
+						<div ng-bind="cell.possible.has(2) ? 2 : ''"></div>
+						<div ng-bind="cell.possible.has(3) ? 3 : ''"></div>
+						<div ng-bind="cell.possible.has(4) ? 4 : ''"></div>
+						<div ng-bind="cell.possible.has(5) ? 5 : ''"></div>
+						<div ng-bind="cell.possible.has(6) ? 6 : ''"></div>
+						<div ng-bind="cell.possible.has(7) ? 7 : ''"></div>
+						<div ng-bind="cell.possible.has(8) ? 8 : ''"></div>
+						<div ng-bind="cell.possible.has(9) ? 9 : ''"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !!cell.value" class="cell"
 						ng-class="{ 'invalid': (cell.errors['value-impossible'] || cell.errors['value-duplicate']) }"
@@ -108,9 +116,9 @@
 			<h2>Demo Stuff</h2>
 
 			<form name="makeBoardForm">
-				<label>w</label> <input name="width" ng-model="body.formData.width"
-					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
 				<label>h</label> <input name="height" ng-model="body.formData.height"
+					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
+				<label>w</label> <input name="width" ng-model="body.formData.width"
 					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
 				<button type="submit" class="btn-primary" ng-disabled="makeBoardForm.$invalid" ng-click="body.makeBoard()">Make Board</button>
 			</form>

@@ -15,9 +15,9 @@ describe('kakuro', function() {
 	 * NOTE this is a test double of what we expect to see on the board
 	 */
 	function createCell(possible) {
-		const $cell = { type: 'cell', value: null, possible: {} };
-		for(let n = 1; n <= 9; n++) $cell.possible[n] = !possible;
-		if(possible) possible.forEach((n) => $cell.possible[n] = true);
+		const $cell = { type: 'cell', value: null, possible: new Set() };
+		if(possible) possible.forEach((n) => $cell.possible.add(n));
+		else for(let n = 1; n <= 9; n++) $cell.possible.add(n);
 		return $cell;
 	}
 
@@ -58,8 +58,8 @@ describe('kakuro', function() {
 	}
 	function listPossibleCell(cell) {
 		const list = [];
-		for (let [key, value] of Object.entries(cell.possible)) {
-			if(value) list.push(+key);
+		for (let num of cell.possible) {
+			list.push(num);
 		}
 		return list;
 	}
@@ -91,24 +91,24 @@ describe('kakuro', function() {
 			it('simple', function() {
 				const $head = createRow(3, [[1, 2], [1, 2]]);
 
-				expect($head.$right.$right.possible[2]).to.equal(true);
-				expect($head.$down.$down.possible[1]).to.equal(true);
+				expect($head.$right.$right.possible.has(2)).to.equal(true);
+				expect($head.$down.$down.possible.has(1)).to.equal(true);
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1, 2]]);
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [1, 2]]);
 
 				$head.$right.value = 2;
 				value($head);
 
-				expect($head.$right.$right.possible[2]).to.equal(false);
-				expect($head.$down.$down.possible[1]).to.equal(true);
+				expect($head.$right.$right.possible.has(2)).to.equal(false);
+				expect($head.$down.$down.possible.has(1)).to.equal(true);
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1]]);
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [1, 2]]);
 
 				$head.$down.value = 1;
 				value($head);
 
-				expect($head.$right.$right.possible[2]).to.equal(false);
-				expect($head.$down.$down.possible[1]).to.equal(false);
+				expect($head.$right.$right.possible.has(2)).to.equal(false);
+				expect($head.$down.$down.possible.has(1)).to.equal(false);
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[1, 2], [1]]);
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[1, 2], [2]]);
 			});
