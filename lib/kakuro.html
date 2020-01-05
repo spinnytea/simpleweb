@@ -100,9 +100,9 @@
 
 			<form name="makeBoardForm">
 				<label>h</label> <input name="height" ng-model="body.formData.height"
-					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
+					type="number" min="3" max="20" required ng-pattern="/^[0-9]+$/" />
 				<label>w</label> <input name="width" ng-model="body.formData.width"
-					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
+					type="number" min="3" max="20" required ng-pattern="/^[0-9]+$/" />
 				<button type="submit" class="btn-primary" ng-disabled="makeBoardForm.$invalid" ng-click="body.makeBoard()">Make Board</button>
 			</form>
 
