@@ -67,6 +67,7 @@ describe('kakuro', function() {
 	it('ensure we have accounted for everything that is exported', function() {
 		expect(Object.keys(kakuro)).to.deep.equal([
 			'heuristic_reset',
+			'heuristic_possibleUser',
 			'heuristic_value',
 			'heuristic_lengthAndSum',
 			'heuristic_usePossible',
@@ -84,6 +85,8 @@ describe('kakuro', function() {
 
 			expect(listPossibleCell($head.$right)).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8, 9]);
 		});
+
+		it('possibleUser');
 
 		describe('value', function() {
 			const value = kakuro.heuristic_value;

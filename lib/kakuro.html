@@ -14,6 +14,7 @@
 
 	<link href="kakuro.css" rel="stylesheet">
 	<script src="possible_values.js"></script>
+	<script src="predefined_boards.js"></script>
 	<script src="kakuro.js"></script>
 </head>
 <body ng-app="kakuro" ng-controller="kakuro.body.controller as body" ng-keydown="body.handleKeys($event)">
@@ -76,6 +77,8 @@
 			</p>
 
 			<div ng-if="body.focus.cell.type === 'empty'">
+				<!-- TODO if showSetup, show right/down anyway; allow inline entry of data -->
+
 				<div ng-if="!!body.focus.cell.right">
 					<h3>Row</h3>
 					<div empty-possible-values cell="body.focus.cell" dir="right"></div>
@@ -116,6 +119,7 @@
 				<dt class="section">Gameplay</dt>
 				<dt>&uarr;&rarr;&darr;&larr;</dt><dd>Move cursor.</dd>
 				<dt>1 - 9</dt><dd>Set the value of a cell (only for ones that can have a number).</dd>
+				<dt>! - (</dt><dd>Toggle possible values for a cell. (Shift + 1, ..., Shift + 9) (only toggles user input, autocomplete values are stored separately)</dd>
 				<dt>del</dt><dd>Clear the value of a cell.</dd>
 				<dt class="section">Editing a Board</dt>
 				<dt>e</dt><dd>Specify an empty cell, a cell that cannot have numbers. This will prompt for right/down sums.</dd>
