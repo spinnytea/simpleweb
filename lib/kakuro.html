@@ -26,8 +26,9 @@
 
 	<div id="board-wrapper" ng-cloak>
 		<table id="board">
-			<tr data-ng-repeat="row in body.board">
-				<td data-ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }">
+			<tr ng-repeat="row in body.board">
+				<td ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }"
+					ng-click="body.setFocus(cell)">
 					<div ng-if="cell.type === 'none'" class="none"></div>
 					<div ng-if="cell.type === 'empty'" class="empty" ng-class="{ 'hasNum': !!(cell.right || cell.down) }">
 						<div class="right" ng-bind="cell.right"
@@ -83,6 +84,30 @@
 				</div>
 			</div>
 			<div ng-if="body.focus.cell.type === 'cell'">
+
+				<p>
+					<button type="button" ng-click="body.clearFocusCellInput()">Clear Input</button>
+				</p>
+				<h3>Value</h3>
+				<p>
+					<button type="button" ng-repeat="num in body.ONE_THROUGH_NINE"
+						ng-class="{
+							'btn-primary': body.focus.cell.value === num && body.focus.cell.possible.has(num),
+							'btn-accent': body.focus.cell.value === num && !body.focus.cell.possible.has(num),
+						}"
+						ng-disabled="!body.focus.cell.possibleUser.has(num)"
+						ng-bind="num" ng-click="body.setFocusValue(num)"></button>
+				</p>
+				<h3>Possible</h3>
+				<p>
+					<button type="button" ng-repeat="num in body.ONE_THROUGH_NINE"
+						ng-class="{
+							'btn-primary': body.focus.cell.possibleUser.has(num) && body.focus.cell.possible.has(num),
+							'btn-accent': body.focus.cell.possibleUser.has(num) && !body.focus.cell.possible.has(num),
+						}"
+						ng-bind="num" ng-click="body.setFocusPossibleUser(num)"></button>
+				</p>
+
 				<h3>Row</h3>
 				<div empty-possible-values cell="body.focus.cell" dir="right"></div>
 
@@ -107,7 +132,7 @@
 		</div>
 
 		<div id="keys-summary">
-			<h2>Keys</h2>
+			<h2>Keyboard</h2>
 			<dl>
 				<dt class="section">Gameplay</dt>
 				<dt>&uarr;&rarr;&darr;&larr;</dt><dd>Move cursor.</dd>
@@ -121,6 +146,14 @@
 				<dt>r</dt><dd>Reset the possible values and run the base heuristic again.</dd>
 				<dt>h</dt><dd>Run experimental heuristic. This won't be run in the normal loop.</dd>
 				<dt>n</dt><dd>Autofill cells that have only one possible number.</dd>
+			</dl>
+
+			<h2>Mouse</h2>
+			<dl>
+				<dt class="section">Gameplay</dt>
+				<dt>Focus</dt><dd>Click on a cell to focus on it.</dd>
+				<dt>Value</dt><dd>Click on a number in the value section to set the value. Click again to clear it.</dd>
+				<dt>Possible Values</dt><dd>Possible values are on by default. Click to turn a number off. Click again to turn it on.</dd>
 			</dl>
 		</div>
 	</div>
