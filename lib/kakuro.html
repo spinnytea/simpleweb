@@ -22,7 +22,7 @@
 
 	<div class="loading-message" ng-show="::false">Doing math...</div>
 
-	<div class="success" ng-if="body.board.$stats.isFinished">&#x1F389; Congratulations!! &#x1F38A;</div>
+	<div class="success" ng-cloak ng-if="body.board.$stats.isFinished">&#x1F389; Congratulations!! &#x1F38A;</div>
 
 	<div id="board-wrapper" ng-cloak>
 		<table id="board">
@@ -36,15 +36,8 @@
 							ng-class="{ 'invalid': (cell.errors['down-no-space'] || cell.errors['down-sum'] || cell.errors['down-number-missing']) }"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !cell.value" class="cell-possible">
-						<div ng-bind="cell.possible.has(1) ? 1 : ''"></div>
-						<div ng-bind="cell.possible.has(2) ? 2 : ''"></div>
-						<div ng-bind="cell.possible.has(3) ? 3 : ''"></div>
-						<div ng-bind="cell.possible.has(4) ? 4 : ''"></div>
-						<div ng-bind="cell.possible.has(5) ? 5 : ''"></div>
-						<div ng-bind="cell.possible.has(6) ? 6 : ''"></div>
-						<div ng-bind="cell.possible.has(7) ? 7 : ''"></div>
-						<div ng-bind="cell.possible.has(8) ? 8 : ''"></div>
-						<div ng-bind="cell.possible.has(9) ? 9 : ''"></div>
+						<div ng-repeat="num in body.ONE_THROUGH_NINE"
+							ng-bind="cell.possible.has(num) ? num : ''"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !!cell.value" class="cell"
 						ng-class="{ 'invalid': (cell.errors['value-impossible'] || cell.errors['value-duplicate']) }"
@@ -120,10 +113,10 @@
 				<dt>&uarr;&rarr;&darr;&larr;</dt><dd>Move cursor.</dd>
 				<dt>1 - 9</dt><dd>Set the value of a cell (only for ones that can have a number).</dd>
 				<dt>! - (</dt><dd>Toggle possible values for a cell. (Shift + 1, ..., Shift + 9) (only toggles user input, autocomplete values are stored separately)</dd>
-				<dt>del</dt><dd>Clear the value of a cell.</dd>
+				<dt>del, `</dt><dd>Clear the value of a cell.</dd>
 				<dt class="section">Editing a Board</dt>
 				<dt>e</dt><dd>Specify an empty cell, a cell that cannot have numbers. This will prompt for right/down sums.</dd>
-				<dt>c</dt><dd>Specify a cell as one that can have a value. This will clear the number already used.</dd>
+				<dt>c</dt><dd>Specify a cell as one that can have a value. This will clear the user input for the cell.</dd>
 				<dt class="section">Dev &amp; Testing</dt>
 				<dt>r</dt><dd>Reset the possible values and run the base heuristic again.</dd>
 				<dt>h</dt><dd>Run experimental heuristic. This won't be run in the normal loop.</dd>
