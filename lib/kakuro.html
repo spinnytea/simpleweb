@@ -71,8 +71,6 @@
 			</p>
 
 			<div ng-if="body.focus.cell.type === 'empty'">
-				<!-- TODO if showSetup, show right/down anyway; allow inline entry of data -->
-
 				<div ng-if="!!body.focus.cell.right">
 					<h3>Row</h3>
 					<div empty-possible-values cell="body.focus.cell" dir="right"></div>
@@ -140,7 +138,7 @@
 				<dt>! - (</dt><dd>Toggle possible values for a cell. (Shift + 1, ..., Shift + 9) (only toggles user input, autocomplete values are stored separately)</dd>
 				<dt>del, `</dt><dd>Clear the value of a cell.</dd>
 				<dt>c</dt><dd>Clear the user input for a cell.</dd>
-				<dt class="section">Editing a Board</dt>
+				<dt class="section">Editing a Board <small>(disabled during gameplay)</small></dt>
 				<dt>e</dt><dd>Specify an empty cell, a cell that cannot have numbers. This will prompt for right/down sums.</dd>
 				<dt>c</dt><dd>Specify a cell as one that can have a value. This will clear the user input for the cell.</dd>
 				<dt class="section">Dev &amp; Testing</dt>

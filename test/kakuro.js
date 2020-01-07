@@ -247,8 +247,6 @@ describe('kakuro', function() {
 				expect(listPossibleRow($head, '$right')).to.deep.equal([[8, 9], [7], [8, 9]]);
 				expect(listPossibleRow($head, '$down')).to.deep.equal([[8, 9], [7], [8, 9]]);
 			});
-
-			// TODO find a longer / more complex example
 		}); // end usePossible
 	}); // end heuristic
 }); // end kakuro
