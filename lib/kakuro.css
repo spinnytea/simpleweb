@@ -1,4 +1,4 @@
-@import 'css-variables/dark.css';
+@import 'css-variables/deep-purple.css';
 
 /* general reset/setup */
 
@@ -22,8 +22,17 @@ h1, h2, h3, h3, h4, h5, h6 {
 h1 {
 	font-size: 3em;
 }
+small {
+	font-size: 0.8em;
+	opacity: 0.8;
+}
 p {
 	margin-bottom: 0.5em;
+}
+ul {
+	margin-bottom: 0.5em;
+	margin-left: 1ch;
+	list-style-type: none;
 }
 :focus {
 	outline-color: var(--darkPrimaryColor);
@@ -236,6 +245,16 @@ table#board td > * {
 
 /* style right stuff */
 
+[empty-possible-values] .num.possible {
+	font-weight: bold;
+	color: var(--primaryColor);
+}
+[empty-possible-values] .num + .num::before {
+	content: ", ";
+	font-weight: normal;
+	color: var(--primaryTextColor);
+}
+
 #extra-info {
 	font-size: calc(var(--fontHeight) * 1.5);
 }
@@ -250,14 +269,15 @@ table#board td > * {
 	margin-bottom: -0.5em; /* undo ths extra space from the buttons */
 }
 
-#keys-summary dl dt {
-	width: 8ch;
-	display: inline-block;
+#keys-summary dl {
+	display: grid;
+	grid-template-columns: auto auto;
+	grid-column-gap: 1ch;
 }
-#keys-summary dl dd {
-	display: inline;
+#keys-summary dl dt.section {
+	font-size: 1.15em;
+	grid-column: 1 / 3;
 }
-#keys-summary dl dd::after {
-	content: " ";
-	display: block;
+#keys-summary dl dt:not(.section) {
+	margin-left: 1ch;
 }

@@ -14,6 +14,7 @@
 
 	<link href="kakuro.css" rel="stylesheet">
 	<script src="possible_values.js"></script>
+	<script src="predefined_boards.js"></script>
 	<script src="kakuro.js"></script>
 </head>
 <body ng-app="kakuro" ng-controller="kakuro.body.controller as body" ng-keydown="body.handleKeys($event)">
@@ -21,12 +22,13 @@
 
 	<div class="loading-message" ng-show="::false">Doing math...</div>
 
-	<div class="success" ng-if="body.board.$stats.isFinished">&#x1F389; Congratulations!! &#x1F38A;</div>
+	<div class="success" ng-cloak ng-if="body.board.$stats.isFinished">&#x1F389; Congratulations!! &#x1F38A;</div>
 
 	<div id="board-wrapper" ng-cloak>
 		<table id="board">
-			<tr data-ng-repeat="row in body.board">
-				<td data-ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }">
+			<tr ng-repeat="row in body.board">
+				<td ng-repeat="cell in row" ng-class="{ 'focus': (cell === body.focus.cell) }"
+					ng-click="body.setFocus(cell)">
 					<div ng-if="cell.type === 'none'" class="none"></div>
 					<div ng-if="cell.type === 'empty'" class="empty" ng-class="{ 'hasNum': !!(cell.right || cell.down) }">
 						<div class="right" ng-bind="cell.right"
@@ -35,15 +37,8 @@
 							ng-class="{ 'invalid': (cell.errors['down-no-space'] || cell.errors['down-sum'] || cell.errors['down-number-missing']) }"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !cell.value" class="cell-possible">
-						<div ng-bind="cell.possible.has(1) ? 1 : ''"></div>
-						<div ng-bind="cell.possible.has(2) ? 2 : ''"></div>
-						<div ng-bind="cell.possible.has(3) ? 3 : ''"></div>
-						<div ng-bind="cell.possible.has(4) ? 4 : ''"></div>
-						<div ng-bind="cell.possible.has(5) ? 5 : ''"></div>
-						<div ng-bind="cell.possible.has(6) ? 6 : ''"></div>
-						<div ng-bind="cell.possible.has(7) ? 7 : ''"></div>
-						<div ng-bind="cell.possible.has(8) ? 8 : ''"></div>
-						<div ng-bind="cell.possible.has(9) ? 9 : ''"></div>
+						<div ng-repeat="num in body.ONE_THROUGH_NINE"
+							ng-bind="cell.possible.has(num) ? num : ''"></div>
 					</div>
 					<div ng-if="cell.type === 'cell' && !!cell.value" class="cell"
 						ng-class="{ 'invalid': (cell.errors['value-impossible'] || cell.errors['value-duplicate']) }"
@@ -75,40 +70,47 @@
 				<span ng-bind="str"></span>
 			</p>
 
-			<!-- REVIEW this whole row/col layout is bad AND it's duped for empty & cell -->
 			<div ng-if="body.focus.cell.type === 'empty'">
 				<div ng-if="!!body.focus.cell.right">
 					<h3>Row</h3>
-					<p>
-						Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.right"></span>,
-						Len: <span class="badge badge-primary" ng-bind="body.focus.cell.rightLength"></span>
-					</p>
-					<p>{{body.possibleValues(body.focus.cell, 'right')}}</p>
+					<div empty-possible-values cell="body.focus.cell" dir="right"></div>
 				</div>
 
 				<div ng-if="!!body.focus.cell.down">
 					<h3>Col</h3>
-					<p>
-						Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.down"></span>,
-						Len: <span class="badge badge-primary" ng-bind="body.focus.cell.downLength"></span>
-					</p>
-					<p>{{body.possibleValues(body.focus.cell, 'down')}}</p>
+					<div empty-possible-values cell="body.focus.cell" dir="down"></div>
 				</div>
 			</div>
 			<div ng-if="body.focus.cell.type === 'cell'">
-				<h3>Row</h3>
+
 				<p>
-					Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.$rightHead.right"></span>,
-					Len: <span class="badge badge-primary" ng-bind="body.focus.cell.$rightHead.rightLength"></span>
+					<button type="button" ng-click="body.clearFocusCellInput()">Clear Input</button>
 				</p>
-				<p>{{body.possibleValues(body.focus.cell.$rightHead, 'right')}}</p>
+				<h3>Value</h3>
+				<p>
+					<button type="button" ng-repeat="num in body.ONE_THROUGH_NINE"
+						ng-class="{
+							'btn-primary': body.focus.cell.value === num && body.focus.cell.possible.has(num),
+							'btn-accent': body.focus.cell.value === num && !body.focus.cell.possible.has(num),
+						}"
+						ng-disabled="!body.focus.cell.possibleUser.has(num)"
+						ng-bind="num" ng-click="body.setFocusValue(num)"></button>
+				</p>
+				<h3>Possible</h3>
+				<p>
+					<button type="button" ng-repeat="num in body.ONE_THROUGH_NINE"
+						ng-class="{
+							'btn-primary': body.focus.cell.possibleUser.has(num) && body.focus.cell.possible.has(num),
+							'btn-accent': body.focus.cell.possibleUser.has(num) && !body.focus.cell.possible.has(num),
+						}"
+						ng-bind="num" ng-click="body.setFocusPossibleUser(num)"></button>
+				</p>
+
+				<h3>Row</h3>
+				<div empty-possible-values cell="body.focus.cell" dir="right"></div>
 
 				<h3>Col</h3>
-				<p>
-					Sum: <span class="badge badge-primary" ng-bind="body.focus.cell.$downHead.down"></span>,
-					Len: <span class="badge badge-primary" ng-bind="body.focus.cell.$downHead.downLength"></span>
-				</p>
-				<p>{{body.possibleValues(body.focus.cell.$downHead, 'down')}}</p>
+				<div empty-possible-values cell="body.focus.cell" dir="down"></div>
 			</div>
 		</div>
 
@@ -117,9 +119,9 @@
 
 			<form name="makeBoardForm">
 				<label>h</label> <input name="height" ng-model="body.formData.height"
-					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
+					type="number" min="3" max="20" required ng-pattern="/^[0-9]+$/" />
 				<label>w</label> <input name="width" ng-model="body.formData.width"
-					type="number" min="3" max="15" required ng-pattern="/^[0-9]+$/" />
+					type="number" min="3" max="20" required ng-pattern="/^[0-9]+$/" />
 				<button type="submit" class="btn-primary" ng-disabled="makeBoardForm.$invalid" ng-click="body.makeBoard()">Make Board</button>
 			</form>
 
@@ -128,16 +130,29 @@
 		</div>
 
 		<div id="keys-summary">
-			<h2>Keys</h2>
+			<h2>Keyboard</h2>
 			<dl>
+				<dt class="section">Gameplay</dt>
 				<dt>&uarr;&rarr;&darr;&larr;</dt><dd>Move cursor.</dd>
+				<dt>1 - 9</dt><dd>Set the value of a cell (only for ones that can have a number).</dd>
+				<dt>! - (</dt><dd>Toggle possible values for a cell. (Shift + 1, ..., Shift + 9) (only toggles user input, autocomplete values are stored separately)</dd>
+				<dt>del, `</dt><dd>Clear the value of a cell.</dd>
+				<dt>c</dt><dd>Clear the user input for a cell.</dd>
+				<dt class="section">Editing a Board <small>(disabled during gameplay)</small></dt>
 				<dt>e</dt><dd>Specify an empty cell, a cell that cannot have numbers. This will prompt for right/down sums.</dd>
-				<dt>c</dt><dd>Specify a cell as one that can have a value. This will clear the number already used.</dd>
+				<dt>c</dt><dd>Specify a cell as one that can have a value. This will clear the user input for the cell.</dd>
+				<dt class="section">Dev &amp; Testing</dt>
 				<dt>r</dt><dd>Reset the possible values and run the base heuristic again.</dd>
 				<dt>h</dt><dd>Run experimental heuristic. This won't be run in the normal loop.</dd>
 				<dt>n</dt><dd>Autofill cells that have only one possible number.</dd>
-				<dt>1 - 9</dt><dd>Set the value of a cell (only for ones that can have a number).</dd>
-				<dt>del</dt><dd>Clear the value of a cell.</dd>
+			</dl>
+
+			<h2>Mouse</h2>
+			<dl>
+				<dt class="section">Gameplay</dt>
+				<dt>Focus</dt><dd>Click on a cell to focus on it.</dd>
+				<dt>Value</dt><dd>Click on a number in the value section to set the value. Click again to clear it.</dd>
+				<dt>Possible Values</dt><dd>Possible values are on by default. Click to turn a number off. Click again to turn it on.</dd>
 			</dl>
 		</div>
 	</div>
