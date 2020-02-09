@@ -20,11 +20,11 @@
 	<div id="quest">
 		<h2>Quest</h2>
 		<p>
-			<span>{{total}}</span>
+			<input type="number" v-model="total" min="1" />
 			of
-			<input type="number" v-model="current" min="0" max="99999" v-bind:step="step" />
+			<input type="number" v-model="current" min="0" v-bind:max="totalS" v-bind:step="step" />
 			(exp
-			<input type="number" v-model="step" min="0" max="999" />)
+			<input type="number" v-model="step" min="0" v-bind:max="total" />)
 		</p>
 		<p>Remaining iterations: <span>{{iterations}}</span></p>
 		<p class="progress-bar inline">
@@ -37,9 +37,16 @@
 		<p>
 			<button v-on:click="start()">Start</button>
 		</p>
-		<p v-if="currentMillis > 0">Now: <span>{{ currentText }}</span></p>
-		<p v-if="total > 0">Avg: <span>{{ averageText }}</span> seconds</p>
-		<p v-if="total > 0">Remaining: <span>{{ remaining }}</span></p>
+		<p v-if="currentMillis > 0">
+			<span>{{ currentText }}</span>
+			<span v-if="total > 0">
+				&rarr; <span>{{ remainingText }}</span>
+				&rarr; <span>{{ endTimeText }}</span>
+			</span>
+		</p>
+		<p v-if="total > 0">
+			Avg: <span>{{ averageText }}</span> seconds
+		</p>
 		<p>
 			<ol>
 				<li v-for="duration in formattedList">
