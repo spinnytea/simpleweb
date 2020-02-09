@@ -11,21 +11,22 @@
 	<link href="progress.css" rel="stylesheet">
 </head>
 <body>
-<div class="container" id="app">
+<div class="container">
 
 	<h1>Progress</h1>
 
-	<div>
+	<div id="quest">
 		<h2>Quest</h2>
 		<p>
-			<span>{{quest.total}}</span>
+			<span>{{total}}</span>
 			of
-			<input type="number" v-model="quest.current" min="0" max="99999" v-bind:step="quest.step" />
+			<input type="number" v-model="current" min="0" max="99999" v-bind:step="step" />
 			(exp
-			<input type="number" v-model="quest.step" min="0" max="999" />)
+			<input type="number" v-model="step" min="0" max="999" />)
 		</p>
+		<p>Remaining iterations: <span>{{iterations}}</span></p>
 		<p class="progress-bar inline">
-			<span class="bar" v-bind:style="{ width: questPercent }">{{questPercent}}</span>
+			<span class="bar" v-bind:style="{ width: percent }">{{percent}}</span>
 		</p>
 	</div>
 
