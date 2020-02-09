@@ -1,4 +1,4 @@
-@import '../css-variables/deep-purple.css';
+@import '../css-variables/light-blue.css';
 
 /* general reset/setup */
 
@@ -29,6 +29,21 @@ h2 {
 input {
 	font-size: 1em;
 	margin: -3px 0;
+	padding-left: 3px;
+	color: var(--primaryTextColor);
+	background-color: var(--textPrimaryColor);
+	border: 1px solid var(--dividerColor);
+}
+button {
+	font-size: 1em;
+	margin: -3px 0;
+	padding: 0 3px;
+	color: var(--textPrimaryColor);
+	background-color: var(--primaryColor);
+	border: 1px solid var(--darkPrimaryColor);
+}
+ol {
+	margin-left: 2ch;
 }
 p {
 	margin-bottom: var(--p-margin);

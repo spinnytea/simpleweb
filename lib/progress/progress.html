@@ -3,10 +3,12 @@
 <head>
 	<title>Progress!</title>
 
-	<!-- development version, includes helpful console warnings -->
-	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-	<!-- production version, optimized for size and speed -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"
+		integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68="
+		crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"
+		integrity="sha256-4iQZ6BVL4qNKlQ27TExEhBN1HFPvAvAMbFavKKosSWQ="
+		crossorigin="anonymous"></script>
 
 	<link href="progress.css" rel="stylesheet">
 </head>
@@ -27,6 +29,25 @@
 		<p>Remaining iterations: <span>{{iterations}}</span></p>
 		<p class="progress-bar inline">
 			<span class="bar" v-bind:style="{ width: percent }">{{percent}}</span>
+		</p>
+	</div>
+
+	<div id="timer">
+		<h2>Timer</h2>
+		<p>
+			<button v-on:click="start()">Start</button>
+		</p>
+		<p v-if="currentMillis > 0">Now: <span>{{ currentText }}</span></p>
+		<p v-if="total > 0">Avg: <span>{{ averageText }}</span> seconds</p>
+		<p>
+			<ol>
+				<li v-for="duration in formattedList">
+					<span>{{ duration }}</span> seconds
+				</li>
+			</ol>
+		</p>
+		<p v-if="currentMillis > 0">
+			<button v-on:click="next()">Next</button>
 		</p>
 	</div>
 
