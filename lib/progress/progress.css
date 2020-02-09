@@ -1,0 +1,57 @@
+@import '../css-variables/deep-purple.css';
+
+/* general reset/setup */
+
+:root {
+	--p-margin: 0.5em;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	color: var(--primaryTextColor);
+	background-color: var(--textPrimaryColor);
+	font-family: sans-serif;
+}
+h1, h2, h3, h3, h4, h5, h6 {
+	font-weight: lighter;
+}
+h1 {
+	font-size: 3em;
+	margin-bottom: var(--p-margin);
+}
+h2 {
+	margin-top: calc(var(--p-margin) * 2);
+	margin-bottom: calc(var(--p-margin) * 0.5);
+}
+input {
+	font-size: 1em;
+	margin: -3px 0;
+}
+p {
+	margin-bottom: var(--p-margin);
+}
+.container {
+	margin: 1em;
+}
+
+/* progress bar */
+.progress-bar {
+	border: 1px solid var(--darkPrimaryColor);
+	height: 1em;
+	background-color: var(--lightPrimaryColor);
+	overflow: hidden;
+}
+.progress-bar.inline {
+	width: 40ch;
+}
+.progress-bar > .bar {
+	display: inline-block;
+	height: 1em;
+	background-color: var(--primaryColor);
+
+	color: var(--textPrimaryColor);
+	text-align: center;
+}

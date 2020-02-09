@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Progress!</title>
+
+	<!-- development version, includes helpful console warnings -->
+	<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+	<!-- production version, optimized for size and speed -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+
+	<link href="progress.css" rel="stylesheet">
+</head>
+<body>
+<div class="container" id="app">
+
+	<h1>Progress</h1>
+
+	<div>
+		<h2>Quest</h2>
+		<p>
+			<span>{{quest.total}}</span>
+			of
+			<input type="number" v-model="quest.current" min="0" max="99999" v-bind:step="quest.step" />
+			(exp
+			<input type="number" v-model="quest.step" min="0" max="999" />)
+		</p>
+		<p class="progress-bar inline">
+			<span class="bar" v-bind:style="{ width: questPercent }">{{questPercent}}</span>
+		</p>
+	</div>
+
+</div>
+<script src="progress.js"></script>
+</body>
+</html>
