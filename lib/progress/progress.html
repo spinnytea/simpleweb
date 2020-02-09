@@ -39,6 +39,7 @@
 		</p>
 		<p v-if="currentMillis > 0">Now: <span>{{ currentText }}</span></p>
 		<p v-if="total > 0">Avg: <span>{{ averageText }}</span> seconds</p>
+		<p v-if="total > 0">Remaining: <span>{{ remaining }}</span> minutes</p>
 		<p>
 			<ol>
 				<li v-for="duration in formattedList">
