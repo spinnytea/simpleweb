@@ -1,9 +1,9 @@
 const expect = require('chai').expect;
-const kakuro = require('../lib/kakuro');
+const kakuro = require('../lib/kakuro/kakuro');
 
 // load some globals by side effect
 require('./angularMock');
-require('../lib/possible_values');
+require('../lib/kakuro/possible_values');
 
 
 describe('kakuro', function() {
