@@ -14,8 +14,16 @@
 }
 
 svg {
-	border: 2px dashed black;
+	border: none;
+	/* border: 2px solid magenta; */
 	margin: 0 auto;
+}
+
+.quiltEdge {
+	fill: none;
+	stroke: #888;
+	stroke-width: 0.5;
+	stroke-dasharray: 2 0.5;
 }
 
 .c1 { fill: coral; background-color: coral; }
