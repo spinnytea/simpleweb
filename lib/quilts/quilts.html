@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Quilts</title>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.11/vue.min.js"
+		integrity="sha256-ngFW3UnAN0Tnm76mDuu7uUtYEcG3G5H1+zioJw3t+68="
+		crossorigin="anonymous"></script>
+
+	<link href="quilts.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+	<svg v-bind:width="width" v-bind:height="height" v-bind:view-box.camel="viewBox">
+		<rect v-for="s in list"
+			v-bind:x="s.x" v-bind:y="s.y" v-bind:width="s.width" v-bind:height="s.height"
+			v-bind:class="s.color" />
+	</svg>
+
+	<div id="metrics">
+		<!-- TODO dl/dt/dd -->
+		<p><strong>Width:</strong> <span v-text="width"></span> inches</p>
+		<p><strong>Height:</strong> <span v-text="height"></span> inches</p>
+		<p v-for="(value, name) in colors">
+			<strong v-text="name"></strong> <span v-text="value"></span> count
+		</p>
+	</div>
+</div>
+<script src="square.js"></script>
+</body>
+</html>

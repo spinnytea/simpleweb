@@ -1,0 +1,24 @@
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	margin: 1em;
+
+	display: grid;
+	grid-template-rows: auto auto;
+	grid-template-columns: 1fr 1fr;
+	grid-column-gap: 1em;
+}
+
+svg {
+	border: 2px dashed black;
+	margin: 0 auto;
+}
+
+svg .c1 { fill: coral; }
+svg .c2 { fill: gold; }
+svg .c3 { fill: seagreen; }
+svg .c4 { fill: cornflowerblue; }
