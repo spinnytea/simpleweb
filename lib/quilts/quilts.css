@@ -18,7 +18,13 @@ svg {
 	margin: 0 auto;
 }
 
-svg .c1 { fill: coral; }
-svg .c2 { fill: gold; }
-svg .c3 { fill: seagreen; }
-svg .c4 { fill: cornflowerblue; }
+.c1 { fill: coral; background-color: coral; }
+.c2 { fill: gold; background-color: gold; }
+.c3 { fill: seagreen; background-color: seagreen; }
+.c4 { fill: cornflowerblue; background-color: cornflowerblue; }
+
+.swatch {
+	width: 1em;
+	height: 1em;
+	display: inline-block;
+}
