@@ -12,22 +12,22 @@
 <body>
 <div class="container">
 
-	<!-- TODO input, redo grid -->
-	<!--  input    picture -->
-	<!-- metrics   picture -->
+	<div id="input">
+		<p><strong>zoom</strong> <input type="range" min="1" max="30" v-model="zoom" /></p>
+	</div>
 
-	<svg v-bind:width="width" v-bind:height="height" v-bind:view-box.camel="viewBox">
+	<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
 		<rect v-for="s in list"
 			v-bind:x="s.x" v-bind:y="s.y" v-bind:width="s.width" v-bind:height="s.height"
 			v-bind:class="s.color" />
-		<rect x="-0.25" y="-0.25" v-bind:width="overallWidth+0.5" v-bind:height="overallHeight+0.5" class="quiltEdge" />
+		<rect x="-0.25" y="-0.25" v-bind:width="quiltWidth+0.5" v-bind:height="quiltHeight+0.5" class="quiltEdge" />
 	</svg>
 
 	<div id="metrics">
 		<!-- TODO dl/dt/dd -->
 		<p><strong>final square size</strong> <span v-text="squareSize"></span> inches</p>
-		<p><strong>final width</strong> <span v-text="width"></span> inches</p>
-		<p><strong>final height</strong> <span v-text="height"></span> inches</p>
+		<p><strong>final width</strong> <span v-text="quiltWidth"></span> inches</p>
+		<p><strong>final height</strong> <span v-text="quiltHeight"></span> inches</p>
 		<p><strong>cut square size</strong> <span v-text="cutSize"></span> inches</p>
 		<p v-for="(value, name) in colors">
 			<span class="swatch" v-bind:class="name"></span> <span v-text="value"></span> count
