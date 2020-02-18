@@ -20,8 +20,7 @@
 	</div>
 
 	<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
-		<!-- TODO configure rotation based on script, or have diamond draw diamonds -->
-		<g transform="rotate(-45 0 0)">
+		<g v-bind:transform="transform">
 			<rect v-for="s in list"
 				v-bind:x="s.x" v-bind:y="s.y" v-bind:width="s.width" v-bind:height="s.height"
 				v-bind:class="s.color" />
