@@ -13,6 +13,9 @@
 <div class="container">
 
 	<div id="input">
+		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" /></p>
+		<p><strong>cols</strong> <input type="number" min="1" max="10" v-model="cols" /></p>
+		<p><strong>rows</strong> <input type="number" min="1" max="10" v-model="rows" /></p>
 		<p><strong>zoom</strong> <input type="range" min="1" max="30" v-model="zoom" /></p>
 	</div>
 
