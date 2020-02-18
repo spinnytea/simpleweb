@@ -42,6 +42,15 @@ svg {
 #metrics {
 	grid-area: metrics;
 }
+#metrics dl {
+	display: grid;
+	grid-template-columns: min-content auto;
+	grid-column-gap: 1ch;
+}
+#metrics dl dt {
+	margin-left: 1ch;
+	white-space: nowrap;
+}
 
 .swatch {
 	width: 1em;
