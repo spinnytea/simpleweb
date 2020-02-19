@@ -20,7 +20,8 @@
 
 		<table><tbody>
 			<tr v-for="(row, r) in matrix">
-				<td v-for="(cell, c) in row" class="swatch" v-bind:class="'c'+cell"></td>
+				<td v-for="(cell, c) in row" class="swatch" v-bind:class="'c'+cell"
+					v-on:click="cycleMatrix(r, c)"></td>
 			</tr>
 		</tbody></table>
 	</div>
