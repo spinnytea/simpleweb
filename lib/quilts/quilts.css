@@ -7,8 +7,10 @@
 .container {
 	margin: 1em;
 
+	/* TODO input / metrics should be next to each other */
+	/*  - maybe that means it shouldn't be in separate grid sections? it's just a div then */
 	display: grid;
-	grid-template-rows: auto auto;
+	grid-template-rows: min-content auto;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 1em;
 	grid-template-areas:
@@ -34,6 +36,13 @@ svg {
 .c2 { fill: gold; background-color: gold; }
 .c3 { fill: seagreen; background-color: seagreen; }
 .c4 { fill: cornflowerblue; background-color: cornflowerblue; }
+.c5 { fill: firebrick; background-color: firebrick; }
+.c6 { fill: mediumpurple; background-color: mediumpurple; }
+.c7 { fill: sienna; background-color: sienna; }
+.c8 { fill: palevioletred; background-color: palevioletred; }
+.c9 { fill: #282C34; background-color: #282C34; }
+.c0 { fill: ivory; background-color: ivory; }
+
 
 #input {
 	grid-area: input;
