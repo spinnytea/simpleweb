@@ -36,9 +36,9 @@ svg {
 .c2 { fill: gold; background-color: gold; }
 .c3 { fill: seagreen; background-color: seagreen; }
 .c4 { fill: cornflowerblue; background-color: cornflowerblue; }
-.c5 { fill: firebrick; background-color: firebrick; }
+.c5 { fill: firebrick; background-color: firebrick; } /* TODO clashes with orange */
 .c6 { fill: mediumpurple; background-color: mediumpurple; }
-.c7 { fill: sienna; background-color: sienna; }
+.c7 { fill: sienna; background-color: sienna; } /* TODO REALLY clashes with orange */
 .c8 { fill: palevioletred; background-color: palevioletred; }
 .c9 { fill: #282C34; background-color: #282C34; }
 .c0 { fill: ivory; background-color: ivory; }
@@ -52,8 +52,12 @@ svg {
 	font-size: 2em;
 	border-collapse: collapse;
 	border-spacing: 0;
+	border: 1px solid black;
 }
-#input table td:hover::after {
+#input table td:focus {
+	outline: none;
+}
+#input table td:focus::after {
 	content: " ";
 	width: 100%;
 	height: 100%;
@@ -80,4 +84,5 @@ svg {
 }
 .swatch:not(td) {
 	display: inline-block;
+	border: 1px solid black;
 }

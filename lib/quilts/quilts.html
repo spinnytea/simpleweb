@@ -20,8 +20,13 @@
 
 		<table><tbody>
 			<tr v-for="(row, r) in matrix">
+				<!-- REVIEW focus and blur is a bit klunky in practice -->
+				<!--  - maybe have a global keypress capture (consume numbers, bubble the rest)? -->
+				<!--  - record 'focus' as mouse moves -->
+				<!--  - this is a lot more complicated, but it will probably feel better -->
 				<td v-for="(cell, c) in row" class="swatch" v-bind:class="'c'+cell"
-					v-on:click="cycleMatrix(r, c)"></td>
+					tabindex="0" v-on:mouseenter="$event.target.focus()" v-on:mouseleave="$event.target.blur()"
+					v-on:click="cycleMatrix(r, c)" v-on:keydown="keypressMatrix($event, r, c)"></td>
 			</tr>
 		</tbody></table>
 	</div>
