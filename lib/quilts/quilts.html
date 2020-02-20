@@ -15,6 +15,7 @@
 	<div id="input">
 		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" /></p>
 		<p v-if="dim===1"><strong>base pattern size</strong> <input type="number" min="1" max="10" step="1" v-model="matrixSize" v-on:change="resizeMatrix" /></p>
+		<p v-if="dim===1"><strong>base pattern offset</strong> <input type="checkbox" v-model="offset" /></p>
 		<p v-if="dim===2"><strong>base pattern width</strong> <input type="number" min="1" max="10" step="1" v-model="matrixWidth" v-on:change="resizeMatrix" /></p>
 		<p v-if="dim===2"><strong>base pattern height</strong> <input type="number" min="1" max="10" step="1" v-model="matrixHeight" v-on:change="resizeMatrix" /></p>
 		<p><strong>cols</strong> <input type="number" min="1" max="10" step="1" v-model="cols" /></p>
@@ -55,8 +56,8 @@
 		</dl>
 	</div>
 </div>
-<script src="square.js"></script>
-<!-- <script src="diamond.js"></script> -->
+<!-- <script src="square.js"></script> -->
+<script src="diamond.js"></script>
 <!-- TODO triangles: e.g. quilt star -->
 <!-- TODO plaid (arbitrary row/col sizes) -->
 </body>
