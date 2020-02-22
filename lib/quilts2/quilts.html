@@ -25,7 +25,15 @@
 			<span v-for="(value, key) in palette"><input type="color" v-model="palette[key]" v-on:change="update" /></span>
 			<button class="addColor" v-on:click="palette.push('#000000')">&#x2795;</button>
 		</p>
-		<!-- TODO input to update texture -->
+		<!-- input to update texture -->
+		<div class="row" v-for="row in texture">
+			<div class="col" v-for="cell in row">
+				<svg viewBox="0 0 1 1">
+					<path v-for="shape in cell.shapes" v-if="shape.path"
+						v-bind:d="shape.path.d" v-bind:fill="shape.path.fill" />
+				</svg>
+			</div>
+		</div>
 
 		<h2>Position</h2>
 		<p><strong>r</strong> <input type="range" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" /></p>
@@ -36,7 +44,7 @@
 		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
 	</div>
 
-	<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
+	<svg id="quilt" v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
 		<g>
 			<g v-for="m in mesh">
 				<path v-for="path in m.paths"
