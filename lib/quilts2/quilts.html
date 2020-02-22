@@ -14,16 +14,18 @@
 
 	<div id="input">
 		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" /></p>
+		<p><strong>r</strong> <input type="number" min="-6.2" max="6.2" step="0.1" v-model="globalOffsetR" v-on:change="update" /></p>
 		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
 
 		<!-- TODO svg input to update texture -->
 	</div>
 
 	<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
-		<g v-bind:transform="transform">
-			<rect v-for="s in list"
-				v-bind:x="s.x" v-bind:y="s.y" v-bind:width="s.width" v-bind:height="s.height"
-				v-bind:class="s.color" />
+		<g>
+			<g v-for="m in mesh">
+				<path v-for="path in m.paths"
+					v-bind:d="path.d" v-bind:fill="path.fill" />
+			</g>
 		</g>
 		<rect x="-0.25" y="-0.25" v-bind:width="quiltWidth+0.5" v-bind:height="quiltHeight+0.5" class="quiltEdge" />
 	</svg>
