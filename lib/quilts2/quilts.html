@@ -13,19 +13,21 @@
 <div class="container">
 
 	<div id="input">
+		<h2>Basics</h2>
 		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" v-on:change="update" /></p>
 		<!-- TODO snap to (change step?, based on squareSize and rotation) -->
 		<p><strong>width</strong> <input type="number" v-model="quiltWidth" v-on:change="update" /></p>
 		<!-- TODO snap to (change step?, based on squareSize and rotation) -->
 		<p><strong>height</strong> <input type="number" v-model="quiltHeight" v-on:change="update" /></p>
 
-		<!-- TODO globalOffsetR change to radio options -45, 0, 45 -->
-		<p><strong>r</strong> <input type="number" min="-6.2" max="6.2" step="0.1" v-model="globalOffsetR" v-on:change="update" /></p>
+		<h2>Position</h2>
+		<p><strong>r</strong> <input type="range" min="-360" max="360" step="15" v-model="globalOffsetR" v-on:change="update" /></p>
 		<!-- TODO snap to (change step?, based on squareSize and rotation) -->
-		<p><strong>x</strong> <input type="range" min="-10" max="10" step="0.1" v-model="globalOffsetX" v-on:change="update" /></p>
+		<p><strong>x</strong> <input type="range" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" /></p>
 		<!-- TODO snap to (change step?, based on squareSize and rotation) -->
-		<p><strong>y</strong> <input type="range" min="-10" max="10" step="0.1" v-model="globalOffsetY" v-on:change="update" /></p>
+		<p><strong>y</strong> <input type="range" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" /></p>
 
+		<h2>View</h2>
 		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
 
 		<!-- TODO svg input to update texture -->
@@ -38,7 +40,9 @@
 					v-bind:d="path.d" v-bind:fill="path.fill" />
 			</g>
 		</g>
-		<rect x="-0.25" y="-0.25" v-bind:width="quiltWidth+0.5" v-bind:height="quiltHeight+0.5" class="quiltEdge" />
+		<rect class="quiltEdgeMask" v-bind:x="-margin/2" v-bind:y="-margin/2" v-bind:stroke-width="margin"
+			v-bind:width="quiltWidth+margin" v-bind:height="quiltHeight+margin" />
+		<rect class="quiltEdge" x="-0.25" y="-0.25" v-bind:width="quiltWidth+0.5" v-bind:height="quiltHeight+0.5" />
 	</svg>
 
 	<div id="metrics">
