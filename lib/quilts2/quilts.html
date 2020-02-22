@@ -14,7 +14,11 @@
 
 	<div id="input">
 		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" /></p>
-		<p><strong>r</strong> <input type="number" min="-6.2" max="6.2" step="0.1" v-model="globalOffsetR" v-on:change="update" /></p>
+		<!-- NOTE the algorithm for drawing cannot handle rotations larger than ~45 degrees (values approach infinity at 90 degrees, breaks at 90; 60 is probably OK) -->
+		<!-- TODO globalOffsetR change to radio options -45, 0, 45 -->
+		<p><strong>r</strong> <input type="number" min="-0.8" max="0.8" step="0.1" v-model="globalOffsetR" v-on:change="update" /></p>
+		<p><strong>x</strong> <input type="range" min="-10" max="10" step="0.1" v-model="globalOffsetX" v-on:change="update" /></p>
+		<p><strong>y</strong> <input type="range" min="-10" max="10" step="0.1" v-model="globalOffsetY" v-on:change="update" /></p>
 		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
 
 		<!-- TODO svg input to update texture -->
