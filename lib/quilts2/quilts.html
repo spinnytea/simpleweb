@@ -21,8 +21,11 @@
 		<p><strong>height</strong> <input type="number" v-model="quiltHeight" v-on:change="update" /></p>
 
 		<h2>Pattern</h2>
-		<p>
-			<span v-for="(value, key) in palette"><input type="color" v-model="palette[key]" v-on:change="update" /></span>
+		<p class="colorSelection">
+			<span v-for="(value, key) in palette">
+				<input type="radio" v-model="selectedColor" v-bind:value="key" />
+				<input type="color" v-model="palette[key]" v-on:change="update" />
+			</span>
 			<button class="addColor" v-on:click="addColor">&#x2795;</button>
 		</p>
 		<!-- input to update texture -->
