@@ -1,0 +1,73 @@
+
+* {
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	margin: 1em;
+
+	/* TODO input / metrics should be next to each other */
+	/*  - maybe that means it shouldn't be in separate grid sections? it's just a div then */
+	display: grid;
+	grid-template-rows: min-content auto;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 1em;
+	grid-template-areas:
+		"input picture"
+		"metrics picture";
+}
+
+svg {
+	grid-area: picture;
+	border: none;
+	/* border: 2px solid magenta; */
+	margin: 0 auto;
+}
+
+.quiltEdge {
+	fill: none;
+	stroke: #888;
+	stroke-width: 0.5;
+	stroke-dasharray: 2 0.5;
+}
+
+/* TODO remove */
+.c1 { fill: coral; background-color: coral; }
+.c2 { fill: gold; background-color: gold; }
+.c3 { fill: seagreen; background-color: seagreen; }
+.c4 { fill: cornflowerblue; background-color: cornflowerblue; }
+.c5 { fill: firebrick; background-color: firebrick; } /* TODO clashes with orange */
+.c6 { fill: mediumpurple; background-color: mediumpurple; }
+.c7 { fill: sienna; background-color: sienna; } /* TODO REALLY clashes with orange */
+.c8 { fill: palevioletred; background-color: palevioletred; }
+.c9 { fill: #282C34; background-color: #282C34; }
+.c0 { fill: ivory; background-color: ivory; }
+
+
+#input {
+	grid-area: input;
+}
+
+#metrics {
+	grid-area: metrics;
+}
+#metrics dl {
+	display: grid;
+	grid-template-columns: min-content auto;
+	grid-column-gap: 1ch;
+}
+#metrics dl dt {
+	margin-left: 1ch;
+	white-space: nowrap;
+}
+
+/* TODO remove */
+.swatch {
+	width: 1em;
+	height: 1em;
+}
+.swatch:not(td) {
+	display: inline-block;
+	border: 1px solid black;
+}
