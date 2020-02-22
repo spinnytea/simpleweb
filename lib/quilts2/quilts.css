@@ -52,18 +52,6 @@ button.addColor {
 	stroke-dasharray: 2 0.5;
 }
 
-/* TODO remove */
-.c1 { fill: coral; background-color: coral; }
-.c2 { fill: gold; background-color: gold; }
-.c3 { fill: seagreen; background-color: seagreen; }
-.c4 { fill: cornflowerblue; background-color: cornflowerblue; }
-.c5 { fill: firebrick; background-color: firebrick; } /* TODO clashes with orange */
-.c6 { fill: mediumpurple; background-color: mediumpurple; }
-.c7 { fill: sienna; background-color: sienna; } /* TODO REALLY clashes with orange */
-.c8 { fill: palevioletred; background-color: palevioletred; }
-.c9 { fill: #282C34; background-color: #282C34; }
-.c0 { fill: ivory; background-color: ivory; }
-
 
 #input {
 	grid-area: input;
@@ -92,14 +80,4 @@ button.addColor {
 }
 #metrics dl dt {
 	white-space: nowrap;
-}
-
-/* TODO remove */
-.swatch {
-	width: 1em;
-	height: 1em;
-}
-.swatch:not(td) {
-	display: inline-block;
-	border: 1px solid black;
 }

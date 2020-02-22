@@ -23,7 +23,7 @@
 		<h2>Pattern</h2>
 		<p>
 			<span v-for="(value, key) in palette"><input type="color" v-model="palette[key]" v-on:change="update" /></span>
-			<button class="addColor" v-on:click="palette.push('#000000')">&#x2795;</button>
+			<button class="addColor" v-on:click="addColor">&#x2795;</button>
 		</p>
 		<!-- input to update texture -->
 		<div class="row" v-for="row in texture">
