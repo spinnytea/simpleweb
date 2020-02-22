@@ -26,11 +26,16 @@
 			<button class="addColor" v-on:click="addColor">&#x2795;</button>
 		</p>
 		<!-- input to update texture -->
-		<div class="row" v-for="row in texture">
-			<div class="col" v-for="cell in row">
+		<div class="row" v-for="(row, r) in texture">
+			<div class="col" v-for="(cell, c) in row">
 				<svg viewBox="0 0 1 1">
 					<path v-for="shape in cell.shapes" v-if="shape.path"
 						v-bind:d="shape.path.d" v-bind:fill="shape.path.fill" />
+					<rect class="clickable" x="0" y="0" width="0.5" height="0.5" v-on:click="clickTL(r, c)"></rect>
+					<rect class="clickable" x="0.5" y="0" width="0.5" height="0.5" v-on:click="clickTR(r, c)"></rect>
+					<rect class="clickable" x="0" y="0.5" width="0.5" height="0.5" v-on:click="clickBL(r, c)"></rect>
+					<rect class="clickable" x="0.5" y="0.5" width="0.5" height="0.5" v-on:click="clickBR(r, c)"></rect>
+					<rect class="clickable" x="0.3" y="0.3" width="0.4" height="0.4" v-on:click="clickCenter(r, c)"></rect>
 				</svg>
 			</div>
 		</div>
