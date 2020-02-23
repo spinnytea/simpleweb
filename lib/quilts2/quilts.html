@@ -51,7 +51,10 @@
 	</div>
 
 	<div id="quilt">
-		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
+		<p>
+			<strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" />
+			<button type="button" v-on:click="shareButton">Share</button>
+		</p>
 		<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
 			<g>
 				<g v-for="m in mesh">
