@@ -15,13 +15,13 @@
 	<!-- TODO playtest on mobile -->
 	<div id="input">
 		<h2>Basics</h2>
-		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" v-on:change="update" /></p>
-		<p><strong>width</strong> <input type="number" min="0" v-bind:step="xsnap" v-model="quiltWidth" v-on:change="update" /></p>
-		<p><strong>height</strong> <input type="number" min="0" v-bind:step="ysnap" v-model="quiltHeight" v-on:change="update" /></p>
+		<p><strong>square size</strong> <input type="number" min="1" max="12" step="0.25" v-model="squareSize" v-on:change="update" /> inches</p>
+		<p><strong>width</strong> <input type="number" min="0" max="120" v-bind:step="qwsnap" v-model="quiltWidth" v-on:change="update" /> inches</p>
+		<p><strong>height</strong> <input type="number" min="0" max="120" v-bind:step="qhsnap" v-model="quiltHeight" v-on:change="update" /> inches</p>
 
 		<h2>Pattern</h2>
-		<p><strong>width</strong> <input type="number" min="1" max="10" v-model="textureWidth" v-on:change="resizeTexture" /></p>
-		<p><strong>height</strong> <input type="number" min="1" max="10" v-model="textureHeight" v-on:change="resizeTexture" /></p>
+		<p><strong>width</strong> <input type="number" min="1" max="10" v-model="textureWidth" v-on:change="resizeTexture" /> squares</p>
+		<p><strong>height</strong> <input type="number" min="1" max="10" v-model="textureHeight" v-on:change="resizeTexture" /> squares</p>
 		<p class="colorSelection">
 			<span v-for="(value, key) in palette">
 				<input type="radio" v-model="selectedColor" v-bind:value="key" />
