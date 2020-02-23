@@ -16,10 +16,8 @@
 	<div id="input">
 		<h2>Basics</h2>
 		<p><strong>square size</strong> <input type="number" min="0.5" max="6" step="0.25" v-model="squareSize" v-on:change="update" /></p>
-		<!-- TODO snap to (change step?, based on squareSize and rotation) -->
-		<p><strong>width</strong> <input type="number" v-model="quiltWidth" v-on:change="update" /></p>
-		<!-- TODO snap to (change step?, based on squareSize and rotation) -->
-		<p><strong>height</strong> <input type="number" v-model="quiltHeight" v-on:change="update" /></p>
+		<p><strong>width</strong> <input type="number" min="0" v-bind:step="xsnap" v-model="quiltWidth" v-on:change="update" /></p>
+		<p><strong>height</strong> <input type="number" min="0" v-bind:step="ysnap" v-model="quiltHeight" v-on:change="update" /></p>
 
 		<h2>Pattern</h2>
 		<p><strong>width</strong> <input type="number" min="1" max="10" v-model="textureWidth" v-on:change="resizeTexture" /></p>
