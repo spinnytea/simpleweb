@@ -48,22 +48,22 @@
 		<p><strong>r</strong> <input type="range" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" /></p>
 		<p><strong>x</strong> <input type="range" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" /></p>
 		<p><strong>y</strong> <input type="range" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" /></p>
-
-		<h2>View</h2>
-		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
 	</div>
 
-	<svg id="quilt" v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
-		<g>
-			<g v-for="m in mesh">
-				<path v-for="path in m.paths"
-					v-bind:d="path.d" v-bind:fill="path.fill" />
+	<div id="quilt">
+		<p><strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" /></p>
+		<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
+			<g>
+				<g v-for="m in mesh">
+					<path v-for="path in m.paths"
+						v-bind:d="path.d" v-bind:fill="path.fill" />
+				</g>
 			</g>
-		</g>
-		<rect class="quiltEdgeMask" v-bind:x="-margin/2" v-bind:y="-margin/2" v-bind:stroke-width="margin"
-			v-bind:width="quiltWidth+margin" v-bind:height="quiltHeight+margin" />
-		<rect class="quiltEdge" x="-0.25" y="-0.25" v-bind:width="quiltWidth+0.5" v-bind:height="quiltHeight+0.5" />
-	</svg>
+			<rect class="quiltEdgeMask" v-bind:x="-margin/2" v-bind:y="-margin/2" v-bind:stroke-width="margin"
+				v-bind:width="quiltWidth+margin" v-bind:height="quiltHeight+margin" />
+			<rect class="quiltEdge" x="-0.25" y="-0.25" v-bind:width="quiltWidth+0.5" v-bind:height="quiltHeight+0.5" />
+		</svg>
+	</div>
 
 	<div id="metrics">
 		<dl>

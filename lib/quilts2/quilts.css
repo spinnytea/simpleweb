@@ -37,9 +37,11 @@ button.addColor {
 
 #quilt {
 	grid-area: picture;
+	text-align: center;
+}
+#quilt svg {
 	border: none;
 	/* border: 2px solid magenta; */
-	margin: 0 auto;
 }
 
 .quiltEdgeMask {
