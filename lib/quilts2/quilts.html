@@ -20,8 +20,8 @@
 		<p><strong>height</strong> <input type="number" min="0" max="120" v-bind:step="qhsnap" v-model="quiltHeight" v-on:change="update" /> inches</p>
 
 		<h2>Pattern</h2>
-		<p><strong>width</strong> <input type="number" min="1" max="10" v-model="textureWidth" v-on:change="resizeTexture" /> squares</p>
-		<p><strong>height</strong> <input type="number" min="1" max="10" v-model="textureHeight" v-on:change="resizeTexture" /> squares</p>
+		<p><strong>width</strong> <input type="number" min="1" max="10" v-model="tCols" v-on:change="resizeTexture" /> squares</p>
+		<p><strong>height</strong> <input type="number" min="1" max="10" v-model="tRows" v-on:change="resizeTexture" /> squares</p>
 		<p class="colorSelection">
 			<span v-for="(value, key) in palette">
 				<input type="radio" v-model="selectedColor" v-bind:value="key" />
