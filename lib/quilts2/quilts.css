@@ -99,3 +99,9 @@ button.addColor {
 #metrics dl dt {
 	white-space: nowrap;
 }
+
+#metrics svg {
+	border: 1px solid black;
+	width: 2em;
+	height: 2em;
+}

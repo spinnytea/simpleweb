@@ -70,6 +70,15 @@
 			<dt>final width</dt> <dd><span v-text="quiltWidth"></span> inches</dd>
 			<dt>final height</dt> <dd><span v-text="quiltHeight"></span> inches</dd>
 			<dt>cut square size</dt> <dd><span v-text="cutSize"></span> inches</dd>
+			<template v-for="c in counts">
+				<dt>
+					<svg viewBox="0 0 1 1">
+						<path v-for="shape in c.shapes" v-if="shape.path"
+							v-bind:d="shape.path.d" v-bind:fill="shape.path.fill" />
+					</svg>
+				</dt>
+				<dd v-text="c.count"></dd>
+			</template>
 		</dl>
 	</div>
 </div>
