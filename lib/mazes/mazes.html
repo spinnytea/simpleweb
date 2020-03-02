@@ -10,13 +10,13 @@
 	<link href="mazes.css" rel="stylesheet">
 </head>
 <body>
-<div class="container">
+<div id="maze" class="container">
 
 	<h1>Mazes</h1>
 
-	<table id="maze">
+	<table>
 		<tr v-for="row in board">
-			<td v-for="cell in row" v-bind:class="cell.class"></td>
+			<td v-for="cell in row" v-bind:class="cell.class" v-bind:style="cell.style"></td>
 		</tr>
 	</table>
 

@@ -19,20 +19,20 @@ h1 {
 
 /* maze */
 
-table#maze {
+table {
 	border-collapse: collapse;
 }
-table#maze td {
+table td {
 	width: 2em;
 	height: 2em;
 	border: 1px solid black;
 }
-table#maze td.unvisited {
+table td.unvisited {
 	background-color:   #F5F5F5;
 }
-table#maze td.visited {
+table td.visited {
 	background-color:   #B6B6B6;
 }
-table#maze td.active {
+table td.active {
 	background-color:   #727272;
 }
