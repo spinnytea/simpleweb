@@ -17,4 +17,22 @@ h1 {
 	margin: 1em;
 }
 
-/*  */
+/* maze */
+
+table#maze {
+	border-collapse: collapse;
+}
+table#maze td {
+	width: 2em;
+	height: 2em;
+	border: 1px solid black;
+}
+table#maze td.unvisited {
+	background-color:   #F5F5F5;
+}
+table#maze td.visited {
+	background-color:   #B6B6B6;
+}
+table#maze td.active {
+	background-color:   #727272;
+}
