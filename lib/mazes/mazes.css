@@ -1,0 +1,20 @@
+/* general reset/setup */
+
+* {
+	margin: 0;
+	padding: 0;
+}
+body {
+	font-family: sans-serif;
+}
+h1 {
+	font-weight: lighter;
+	font-size: 3em;
+	margin-bottom: 0.5em;
+}
+
+.container {
+	margin: 1em;
+}
+
+/*  */
