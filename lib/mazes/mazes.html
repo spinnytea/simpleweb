@@ -20,9 +20,11 @@
 		</tr>
 	</table>
 
-	<div class="button-bar">
-		<button type="button" v-on:click="makeNewBoard">Generate</button>
-	</div>
+	<form class="form-inline" onsubmit="return false;">
+		<input type="number" min="3" max="60" v-model="width" />
+		<input type="number" min="3" max="60" v-model="height" />
+		<button type="submit" v-on:click="makeNewBoard">Generate</button>
+	</form>
 
 </div>
 <script src="mazes.js"></script>

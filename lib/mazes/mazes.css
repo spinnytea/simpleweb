@@ -46,8 +46,15 @@ table td.active {
 	background-color: var(--medium);
 }
 
-.button-bar {
-	margin: 0.5em 0;
+.form-inline {
+	margin: 5px 0;
+}
+
+input {
+	font-size: 1em;
+	height: 2em;
+	padding-left: 2ch;
+	padding-right: 1ch;
 }
 
 button {
