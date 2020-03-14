@@ -16,7 +16,7 @@
 
 	<table>
 		<tr v-for="row in board">
-			<td v-for="cell in row" v-bind:class="cell.class" v-bind:style="cell.style"></td>
+			<td v-for="cell in row" v-bind:class="cell.class" v-bind:style="cell.style" v-on:click="clickToMove(cell)"></td>
 		</tr>
 	</table>
 

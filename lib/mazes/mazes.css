@@ -51,6 +51,10 @@ table td.visited {
 table td.active {
 	background-color: var(--dark);
 }
+table td:hover {
+	outline: 5px solid var(--dark);
+	outline-offset: -5px; /* BUG since the border-collapse, this is 1px too far up/left */
+}
 
 .form-inline {
 	margin: 5px 0;
@@ -72,11 +76,11 @@ select {
 	font-size: 1em;
 	vertical-align: top;
 	height: calc(var(--font-size) * 2 + 4px);
-	padding-left: 2ch; /* this is completely ignored */
-	padding-right: 1ch; /* this is completely ignored */
+	padding-left: 2ch; /* NOTE this is completely ignored */
+	padding-right: 1ch; /* NOTE this is completely ignored */
 
 	border: 1px solid var(--medium);
-	border-radius: 4px; /* XXX this is completely ignored */
+	border-radius: 4px; /* NOTE this is completely ignored */
 	color: var(--text);
 	background-color: var(--white);
 }
