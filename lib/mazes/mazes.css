@@ -1,15 +1,23 @@
 /* general reset/setup */
 
+:root {
+	--white: #F5F5F5;
+	--light: #D2D2D2;
+	--medium: #898989;
+	--black: black;
+}
+
 * {
 	margin: 0;
 	padding: 0;
 }
 body {
+	font-size: 16px;
 	font-family: sans-serif;
 }
 h1 {
 	font-weight: lighter;
-	font-size: 3em;
+	font-size: 2.5em;
 	margin-bottom: 0.5em;
 }
 
@@ -23,16 +31,35 @@ table {
 	border-collapse: collapse;
 }
 table td {
-	width: 2em;
-	height: 2em;
-	border: 1px solid black;
+	--cell-size: 40px;
+	width: var(--cell-size);
+	height: var(--cell-size);
+	border: 1px solid var(--black);
 }
 table td.unvisited {
-	background-color:   #F5F5F5;
+	background-color: var(--white);
 }
 table td.visited {
-	background-color:   #D2D2D2;
+	background-color: var(--light);
 }
 table td.active {
-	background-color:   #898989;
+	background-color: var(--medium);
+}
+
+.button-bar {
+	margin: 0.5em 0;
+}
+
+button {
+	font-size: 1em;
+	padding: 0.5em 2ch;
+	border-radius: 4px;
+	border: 1px solid var(--light);
+	background-color: var(--white);
+}
+button:hover,
+button:focus {
+	outline: none;
+	border-color: var(--medium);
+	background-color: var(--light);
 }
