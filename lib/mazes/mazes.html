@@ -23,6 +23,10 @@
 	<form class="form-inline" onsubmit="return false;">
 		<input type="number" min="3" max="60" v-model="width" />
 		<input type="number" min="3" max="60" v-model="height" />
+		<select v-model="type">
+			<option value="prim">Prim's</option>
+			<option value="kruskal">Kruskal's</option>
+		</select>
 		<button type="submit" v-on:click="makeNewBoard">Generate</button>
 	</form>
 

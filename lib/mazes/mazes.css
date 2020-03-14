@@ -1,10 +1,14 @@
 /* general reset/setup */
 
 :root {
-	--white: #F5F5F5;
-	--light: #D2D2D2;
-	--medium: #898989;
+	--white: #FEFEFE;
+	--light: #F5F5F5;
+	--medium: #D2D2D2;
+	--dark: #898989;
+	--text: black;
 	--black: black;
+
+	--font-size: 16px;
 }
 
 * {
@@ -12,8 +16,10 @@
 	padding: 0;
 }
 body {
-	font-size: 16px;
+	font-size: var(--font-size);
 	font-family: sans-serif;
+	color: var(--text);
+	background-color: var(--white);
 }
 h1 {
 	font-weight: lighter;
@@ -37,13 +43,13 @@ table td {
 	border: 1px solid var(--black);
 }
 table td.unvisited {
-	background-color: var(--white);
-}
-table td.visited {
 	background-color: var(--light);
 }
-table td.active {
+table td.visited {
 	background-color: var(--medium);
+}
+table td.active {
+	background-color: var(--dark);
 }
 
 .form-inline {
@@ -52,21 +58,41 @@ table td.active {
 
 input {
 	font-size: 1em;
-	height: 2em;
+	height: calc(var(--font-size) * 2 + 2px);
 	padding-left: 2ch;
 	padding-right: 1ch;
+
+	border: 1px solid var(--medium);
+	border-radius: 4px;
+	color: var(--text);
+	background-color: var(--white);
+}
+
+select {
+	font-size: 1em;
+	vertical-align: top;
+	height: calc(var(--font-size) * 2 + 4px);
+	padding-left: 2ch; /* this is completely ignored */
+	padding-right: 1ch; /* this is completely ignored */
+
+	border: 1px solid var(--medium);
+	border-radius: 4px; /* XXX this is completely ignored */
+	color: var(--text);
+	background-color: var(--white);
 }
 
 button {
 	font-size: 1em;
-	padding: 0.5em 2ch;
+	padding: calc(var(--font-size) / 2) 2ch;
+
 	border-radius: 4px;
-	border: 1px solid var(--light);
-	background-color: var(--white);
+	border: 1px solid var(--medium);
+	color: var(--text);
+	background-color: var(--light);
 }
 button:hover,
 button:focus {
 	outline: none;
-	border-color: var(--medium);
-	background-color: var(--light);
+	border-color: var(--dark);
+	background-color: var(--medium);
 }
