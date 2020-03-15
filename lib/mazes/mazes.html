@@ -28,7 +28,13 @@
 			<option value="kruskal">Kruskal's</option>
 			<option value="depthFirst">Depth First</option>
 		</select>
-		<button type="submit" v-on:click="makeNewBoard">Generate</button>
+		<button type="submit" v-on:click="makeNewBoard">Ge<u>n</u>erate</button>
+		<span class="button-group">
+			<button type="button" class="red" v-on:click="goto(0, 0)">R</button>
+			<button type="button" class="yellow" v-on:click="goto(0, 1)">Y</button>
+			<button type="button" class="green" v-on:click="goto(1, 0)">G</button>
+			<button type="button" class="blue" v-on:click="goto(1, 1)">B</button>
+		</span>
 		<button type="button" v-on:click="wander">Wander</button>
 	</form>
 

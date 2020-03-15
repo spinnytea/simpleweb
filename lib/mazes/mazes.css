@@ -8,6 +8,11 @@
 	--text: black;
 	--black: black;
 
+	--red: hsl(0, 50%, 80%);
+	--yellow: hsl(50, 50%, 80%);
+	--green: hsl(100, 50%, 80%);
+	--blue: hsl(200, 50%, 80%);
+
 	--font-size: 16px;
 }
 
@@ -42,19 +47,18 @@ table td {
 	height: var(--cell-size);
 	border: 1px solid var(--black);
 }
-table td.unvisited {
-	background-color: var(--light);
-}
-table td.visited {
-	background-color: var(--medium);
-}
-table td.active {
-	background-color: var(--dark);
-}
 table td:hover {
 	outline: 5px solid var(--dark);
 	outline-offset: -5px; /* BUG since the border-collapse, this is 1px too far up/left */
 }
+
+table td.unvisited { background-color: var(--light); }
+table td.visited { background-color: var(--medium); }
+table td.active { background-color: var(--dark); }
+table td.red { background-color: var(--red); }
+table td.yellow { background-color: var(--yellow); }
+table td.green { background-color: var(--green); }
+table td.blue { background-color: var(--blue); }
 
 .form-inline {
 	margin: 5px 0;
@@ -100,3 +104,25 @@ button:focus {
 	border-color: var(--dark);
 	background-color: var(--medium);
 }
+
+.button-group {
+	display: inline-block;
+	vertical-align: top;
+}
+.button-group > button {
+	border-radius: 0;
+	float: left;
+}
+.button-group > button:first-child {
+	border-top-left-radius: 4px;
+	border-bottom-left-radius: 4px;
+}
+.button-group > button:last-child {
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+}
+
+button.red { background-color: var(--red); }
+button.yellow { background-color: var(--yellow); }
+button.green { background-color: var(--green); }
+button.blue { background-color: var(--blue); }
