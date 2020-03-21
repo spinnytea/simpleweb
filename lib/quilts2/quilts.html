@@ -19,10 +19,11 @@
 		<p><label for="squareSize">square size</label> <input type="number" id="squareSize" min="1" max="12" step="0.25" v-model="squareSize" v-on:change="update" /> inches</p>
 		<p><label for="quiltWidth">quilt width</label> <input type="number" id="quiltWidth" min="0" max="120" v-bind:step="qwsnap" v-model="quiltWidth" v-on:change="update" /> inches</p>
 		<p><label for="quiltHeight">quilt height</label> <input type="number" id="quiltHeight" min="0" max="120" v-bind:step="qhsnap" v-model="quiltHeight" v-on:change="update" /> inches</p>
+		<p>Tip: After rotating the pattern, use the arrows to adjust the width and height until it snaps to the desired corner.</p>
 
 		<h2>Pattern</h2>
-		<p><label for="tCols">width</label> <input type="number" id="tCols" min="1" max="10" v-model="tCols" v-on:change="resizeTexture" /> squares</p>
-		<p><label for="tRows">height</label> <input type="number" id="tRows" min="1" max="10" v-model="tRows" v-on:change="resizeTexture" /> squares</p>
+		<p><label for="tCols">wide</label> <input type="number" id="tCols" min="1" max="10" v-model="tCols" v-on:change="resizeTexture" /> squares</p>
+		<p><label for="tRows">tall</label> <input type="number" id="tRows" min="1" max="10" v-model="tRows" v-on:change="resizeTexture" /> squares</p>
 		<p class="colorSelection">
 			<span v-for="(value, key) in palette">
 				<input type="radio" v-model="selectedColor" v-bind:value="key" />
@@ -45,21 +46,21 @@
 			</div>
 		</div>
 
-		<h2>Position</h2>
+		<h2>Positioning</h2>
 		<p>
-			<label for="globalOffsetR">&#x21ba;/&#x21bb; rotate</label>
+			<label for="globalOffsetR">rotate &#x21ba;/&#x21bb;</label>
 			<button type="button" v-on:click="stepDown('globalOffsetR')"><i class="minus"></i></button>
 			<input type="range" id="globalOffsetR" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" />
 			<button type="button" v-on:click="stepUp('globalOffsetR')"><i class="plus"></i></button>
 		</p>
 		<p>
-			<label for="globalOffsetX">&larr;/&rarr; offset</label>
+			<label for="globalOffsetX">offset &larr;/&rarr;</label>
 			<button type="button" v-on:click="stepDown('globalOffsetX')"><i class="minus"></i></button>
 			<input type="range" id="globalOffsetX" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" />
 			<button type="button" v-on:click="stepUp('globalOffsetX')"><i class="plus"></i></button>
 		</p>
 		<p>
-			<label for="globalOffsetY">&uarr;/&darr; offset</label>
+			<label for="globalOffsetY">offset &uarr;/&darr;</label>
 			<button type="button" v-on:click="stepDown('globalOffsetY')"><i class="minus"></i></button>
 			<input type="range" id="globalOffsetY" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" />
 			<button type="button" v-on:click="stepUp('globalOffsetY')"><i class="plus"></i></button>
