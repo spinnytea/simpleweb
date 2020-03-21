@@ -16,13 +16,13 @@
 	<!-- TODO playtest on desktop. like, that share button is awful -->
 	<div id="input">
 		<h2>Basics</h2>
-		<p><strong>square size</strong> <input type="number" min="1" max="12" step="0.25" v-model="squareSize" v-on:change="update" /> inches</p>
-		<p><strong>width</strong> <input type="number" min="0" max="120" v-bind:step="qwsnap" v-model="quiltWidth" v-on:change="update" /> inches</p>
-		<p><strong>height</strong> <input type="number" min="0" max="120" v-bind:step="qhsnap" v-model="quiltHeight" v-on:change="update" /> inches</p>
+		<p><label for="squareSize">square size</label> <input type="number" id="squareSize" min="1" max="12" step="0.25" v-model="squareSize" v-on:change="update" /> inches</p>
+		<p><label for="quiltWidth">quilt width</label> <input type="number" id="quiltWidth" min="0" max="120" v-bind:step="qwsnap" v-model="quiltWidth" v-on:change="update" /> inches</p>
+		<p><label for="quiltHeight">quilt height</label> <input type="number" id="quiltHeight" min="0" max="120" v-bind:step="qhsnap" v-model="quiltHeight" v-on:change="update" /> inches</p>
 
 		<h2>Pattern</h2>
-		<p><strong>width</strong> <input type="number" min="1" max="10" v-model="tCols" v-on:change="resizeTexture" /> squares</p>
-		<p><strong>height</strong> <input type="number" min="1" max="10" v-model="tRows" v-on:change="resizeTexture" /> squares</p>
+		<p><label for="tCols">width</label> <input type="number" id="tCols" min="1" max="10" v-model="tCols" v-on:change="resizeTexture" /> squares</p>
+		<p><label for="tRows">height</label> <input type="number" id="tRows" min="1" max="10" v-model="tRows" v-on:change="resizeTexture" /> squares</p>
 		<p class="colorSelection">
 			<span v-for="(value, key) in palette">
 				<input type="radio" v-model="selectedColor" v-bind:value="key" />
@@ -46,14 +46,14 @@
 		</div>
 
 		<h2>Position</h2>
-		<p><strong>r</strong> <input type="range" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" /></p>
-		<p><strong>x</strong> <input type="range" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" /></p>
-		<p><strong>y</strong> <input type="range" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" /></p>
+		<p><label for="globalOffsetR">&#x21ba;/&#x21bb; rotate</label> <input type="range" id="globalOffsetR" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" /></p>
+		<p><label for="globalOffsetX">&larr;/&rarr; offset</label> <input type="range" id="globalOffsetX" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" /></p>
+		<p><label for="globalOffsetY">&uarr;/&darr; offset</label> <input type="range" id="globalOffsetY" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" /></p>
 	</div>
 
 	<div id="quilt">
 		<p>
-			<strong>zoom</strong> <input type="range" min="1" max="30" step="1" v-model="zoom" />
+			<label for="zoom">zoom</label> <input type="range" id="zoom" min="1" max="30" step="1" v-model="zoom" />
 			<button type="button" v-on:click="shareButton">Share</button>
 		</p>
 		<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
@@ -70,6 +70,7 @@
 	</div>
 
 	<div id="metrics">
+		<h2>Final Details</h2>
 		<dl>
 			<dt>final square size</dt> <dd><span v-text="squareSize"></span> inches</dd>
 			<dt>final width</dt> <dd><span v-text="quiltWidth"></span> inches</dd>
