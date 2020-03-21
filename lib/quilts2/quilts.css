@@ -20,6 +20,10 @@ label {
 	display: inline-block;
 }
 
+p {
+	margin-bottom: 3px;
+}
+
 button {
 	height: 23px;
 	padding: 0 1ch;
@@ -29,6 +33,10 @@ button {
 	cursor: pointer;
 
 	margin-left: 6px;
+	background-color: #fefefe;
+}
+button:hover {
+	background-color: #ddd;
 }
 
 .container {
@@ -43,6 +51,17 @@ button {
 	grid-template-areas:
 		"input picture"
 		"metrics picture";
+}
+
+.plus::after {
+	content: "\2795";
+	font-style: normal;
+	font-size: 1em;
+}
+.minus::after {
+	content: "\2796";
+	font-style: normal;
+	font-size: 1em;
 }
 
 #quilt {

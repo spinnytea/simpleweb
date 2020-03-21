@@ -28,7 +28,7 @@
 				<input type="radio" v-model="selectedColor" v-bind:value="key" />
 				<input type="color" v-model="palette[key]" v-on:change="update" />
 			</span>
-			<button class="addColor" v-on:click="addColor">&#x2795;</button>
+			<button type="button" class="addColor" v-on:click="addColor"><i class="plus"></i></button>
 		</p>
 		<!-- input to update texture -->
 		<div class="row" v-for="(row, r) in texture">
@@ -46,15 +46,35 @@
 		</div>
 
 		<h2>Position</h2>
-		<p><label for="globalOffsetR">&#x21ba;/&#x21bb; rotate</label> <input type="range" id="globalOffsetR" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" /></p>
-		<p><label for="globalOffsetX">&larr;/&rarr; offset</label> <input type="range" id="globalOffsetX" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" /></p>
-		<p><label for="globalOffsetY">&uarr;/&darr; offset</label> <input type="range" id="globalOffsetY" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" /></p>
+		<p>
+			<label for="globalOffsetR">&#x21ba;/&#x21bb; rotate</label>
+			<button type="button" v-on:click="stepDown('globalOffsetR')"><i class="minus"></i></button>
+			<input type="range" id="globalOffsetR" min="-180" max="180" step="15" v-model="globalOffsetR" v-on:change="update" />
+			<button type="button" v-on:click="stepUp('globalOffsetR')"><i class="plus"></i></button>
+		</p>
+		<p>
+			<label for="globalOffsetX">&larr;/&rarr; offset</label>
+			<button type="button" v-on:click="stepDown('globalOffsetX')"><i class="minus"></i></button>
+			<input type="range" id="globalOffsetX" v-bind:min="xmin" v-bind:max="xmax" v-bind:step="xsnap" v-model="globalOffsetX" v-on:change="update" />
+			<button type="button" v-on:click="stepUp('globalOffsetX')"><i class="plus"></i></button>
+		</p>
+		<p>
+			<label for="globalOffsetY">&uarr;/&darr; offset</label>
+			<button type="button" v-on:click="stepDown('globalOffsetY')"><i class="minus"></i></button>
+			<input type="range" id="globalOffsetY" v-bind:min="ymin" v-bind:max="ymax" v-bind:step="ysnap" v-model="globalOffsetY" v-on:change="update" />
+			<button type="button" v-on:click="stepUp('globalOffsetY')"><i class="plus"></i></button>
+		</p>
 	</div>
 
 	<div id="quilt">
+		<p align="right">
+			<button type="button" v-on:click="shareButton">Share &#x2197;</button>
+		</p>
 		<p>
-			<label for="zoom">zoom</label> <input type="range" id="zoom" min="1" max="30" step="1" v-model="zoom" />
-			<button type="button" v-on:click="shareButton">Share</button>
+			<label for="zoom">zoom</label>
+			<button type="button" v-on:click="stepDown('zoom')"><i class="minus"></i></button>
+			<input type="range" id="zoom" min="1" max="30" step="1" v-model="zoom" />
+			<button type="button" v-on:click="stepUp('zoom')"><i class="plus"></i></button>
 		</p>
 		<svg v-bind:width="svgWidth" v-bind:height="svgHeight" v-bind:view-box.camel="viewBox">
 			<g>
