@@ -16,7 +16,7 @@
 
 	<table>
 		<tr v-for="row in board">
-			<td v-for="cell in row" v-bind:class="cell.class" v-bind:style="cell.style" v-on:click="clickToMove(cell)"></td>
+			<td v-for="cell in row" v-bind:class="cell.class" v-bind:style="cell.style" v-on:click="moveToCell(cell)"></td>
 		</tr>
 	</table>
 
@@ -30,10 +30,10 @@
 		</select>
 		<button type="submit" v-on:click="makeNewBoard">Ge<u>n</u>erate</button>
 		<span class="button-group">
-			<button type="button" class="red" v-on:click="goto(0, 0)">R</button>
-			<button type="button" class="yellow" v-on:click="goto(0, 1)">Y</button>
-			<button type="button" class="green" v-on:click="goto(1, 0)">G</button>
-			<button type="button" class="blue" v-on:click="goto(1, 1)">B</button>
+			<button type="button" class="red" v-bind:disabled="!red" v-on:click="moveToCell(red)">R</button>
+			<button type="button" class="yellow" v-bind:disabled="!yellow" v-on:click="moveToCell(yellow)">Y</button>
+			<button type="button" class="green" v-bind:disabled="!green" v-on:click="moveToCell(green)">G</button>
+			<button type="button" class="blue" v-bind:disabled="!blue" v-on:click="moveToCell(blue)">B</button>
 		</span>
 		<button type="button" v-on:click="wander">Wander</button>
 	</form>

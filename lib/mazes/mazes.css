@@ -104,6 +104,9 @@ button:focus {
 	border-color: var(--dark);
 	background-color: var(--medium);
 }
+button:not(:disabled) {
+	cursor: pointer;
+}
 
 .button-group {
 	display: inline-block;
@@ -126,3 +129,4 @@ button.red { background-color: var(--red); }
 button.yellow { background-color: var(--yellow); }
 button.green { background-color: var(--green); }
 button.blue { background-color: var(--blue); }
+button:disabled { background-color: var(--medium); color: var(--dark); }
