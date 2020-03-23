@@ -64,7 +64,7 @@ table td.blue { background-color: var(--blue); }
 	margin: 5px 0;
 }
 
-input {
+input:not([type="checkbox"]) {
 	font-size: 1em;
 	height: calc(var(--font-size) * 2 + 2px);
 	padding-left: 2ch;
@@ -74,6 +74,12 @@ input {
 	border-radius: 4px;
 	color: var(--text);
 	background-color: var(--white);
+}
+input[type="checkbox"] {
+	/* NOTE this assumes the font it's next to is also 1em */
+	/*  - in chrome, the box doesn't get bigger than 1em; ideally, it would be font-sized */
+	font-size: 1em;
+	vertical-align: text-top;
 }
 
 select {

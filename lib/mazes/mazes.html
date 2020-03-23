@@ -36,6 +36,10 @@
 			<button type="button" class="blue" v-bind:disabled="!blue" v-on:click="moveToCell(blue)">B</button>
 		</span>
 		<button type="button" v-on:click="wander">Wander</button>
+		<label title="When wandering, auto generate when the maze is finished and wander some more.">
+			<input type="checkbox" v-model="auto" />
+			Auto-wander
+		</label>
 	</form>
 
 </div>
