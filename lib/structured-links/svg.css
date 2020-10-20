@@ -10,29 +10,49 @@ svg {
 	height: 100vh;
 }
 
+.center circle {
+	fill: none;
+	stroke: black;
+	stroke-width: 1;
+}
+
+path.circle-stack-line,
+circle.small {
+	fill: white;
+	stroke: black;
+	stroke-width: 0.5;
+}
+
 g.stack > rect,
 g.stack .children-container {
 	fill: none;
 	stroke: red; /* TODO color */
 	stroke-width: 0.5px; /* TODO size */
-	rx: 10; /* TODO change style, this is just temp for now */
+	rx: 5px; /* TODO change style, this is just temp for now */
 }
-g.stack > text,
-g.child > text {
+
+text {
 	fill: blue; /* TODO color */
 	text-anchor: middle; /* horizontal center */
 	alignment-baseline: middle; /* vertical center */
 }
-g.stack > text {
-	font-size: 5px; /* TODO size */
+a:hover {
+	text-decoration: underline;
 }
-g.child > text {
+
+g.stack > text {
 	font-size: 3px; /* TODO size */
+}
+g.child > a > text {
+	font-size: 2px; /* TODO size */
+}
+.center text {
+	font-size: 10px; /* TODO size */
 }
 
 g.child > rect {
 	fill: none;
 	stroke: red; /* TODO color */
 	stroke-width: 0.5px;/* TODO size */
-	rx: 4; /* TODO change style, this is just temp for now */
+	rx: 2px; /* TODO change style, this is just temp for now */
 }
