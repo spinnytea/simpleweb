@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Structured Links - SVG</title>
+
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+
+	<link href="svg.css" rel="stylesheet">
+	<script src="database.js"></script>
+</head>
+<body>
+	<div id="root">
+		<svg :view-box.camel="viewBox">
+			<g v-for="s in stacks" class="stack">
+				<rect :x="s.x" :y="s.y" :width="s.width" :height="s.height"></rect>
+				<text :x="s.x + s.width / 2" :y="s.y + s.height / 2" v-text="s.display"></text>
+
+				<!-- TODO children-container positioning -->
+				<rect class="children-container" x="50" :y="s.y" width="150" :height="s.height"></rect>
+				<g v-for="c in s.children" class="child">
+					<rect :x="c.x" :y="c.y" :width="c.width" :height="c.height"></rect>
+					<text :x="c.x + c.width / 2" :y="c.y + c.height / 2" v-text="c.display"></text>
+				</g>
+			 </g>
+		</svg>
+	</div>
+	<script src="svg.js"></script>
+</body>
+</html>

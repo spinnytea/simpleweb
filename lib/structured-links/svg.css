@@ -1,0 +1,38 @@
+body {
+	font-family: Verdana, sans-serif;
+}
+
+svg {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+}
+
+g.stack > rect,
+g.stack .children-container {
+	fill: none;
+	stroke: red; /* TODO color */
+	stroke-width: 0.5px; /* TODO size */
+	rx: 10; /* TODO change style, this is just temp for now */
+}
+g.stack > text,
+g.child > text {
+	fill: blue; /* TODO color */
+	text-anchor: middle; /* horizontal center */
+	alignment-baseline: middle; /* vertical center */
+}
+g.stack > text {
+	font-size: 5px; /* TODO size */
+}
+g.child > text {
+	font-size: 3px; /* TODO size */
+}
+
+g.child > rect {
+	fill: none;
+	stroke: red; /* TODO color */
+	stroke-width: 0.5px;/* TODO size */
+	rx: 4; /* TODO change style, this is just temp for now */
+}
