@@ -2,33 +2,43 @@ body {
 	font-family: Verdana, sans-serif;
 }
 
+:root {
+	--color-bg: white;
+	--color-lines: black;
+}
+
 svg {
 	position: fixed;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
+
+	background-color: var(--color-bg);
 }
 
 .center circle {
-	fill: none;
-	stroke: black;
+	fill: var(--color-bg); /* TODO color */
+	stroke: var(--color-lines); /* TODO color */
 	stroke-width: 1;
 }
 
 path.circle-stack-line,
 circle.small {
-	fill: white;
-	stroke: black;
+	fill: var(--color-bg); /* TODO color */
+	stroke: var(--color-lines); /* TODO color */
 	stroke-width: 0.5;
+}
+path.circle-stack-line {
+	fill: none;
 }
 
 g.stack > rect,
 g.stack .children-container {
-	fill: none;
-	stroke: red; /* TODO color */
+	fill: var(--color-bg); /* TODO color */
+	stroke: var(--color-lines); /* TODO color */
 	stroke-width: 0.5px; /* TODO size */
-	rx: 5px; /* TODO change style, this is just temp for now */
+	rx: 3px; /* TODO change style, this is just temp for now */
 }
 
 text {
@@ -43,16 +53,32 @@ a:hover {
 g.stack > text {
 	font-size: 3px; /* TODO size */
 }
+g.child > text,
 g.child > a > text {
 	font-size: 2px; /* TODO size */
+}
+g.child > text {
+	font-style: italic;
+	opacity: 0.85;
 }
 .center text {
 	font-size: 10px; /* TODO size */
 }
 
 g.child > rect {
-	fill: none;
-	stroke: red; /* TODO color */
-	stroke-width: 0.5px;/* TODO size */
-	rx: 2px; /* TODO change style, this is just temp for now */
+	fill: var(--color-bg); /* TODO color */
+	stroke: red;
+	stroke-width: 0.5px; /* TODO size */
+	rx: 1px; /* TODO change style, this is just temp for now */
+}
+
+g.child.library > rect {
+	stroke: blue; /* TODO color */
+}
+
+g.stack > rect.active,
+g.child.active > rect,
+.active path.circle-stack-line,
+.active circle.small {
+	stroke-width: 1px; /* TODO size */
 }

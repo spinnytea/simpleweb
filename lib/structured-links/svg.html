@@ -18,7 +18,7 @@
 				</a>
 			</g>
 
-			<g v-for="s in stacks">
+			<g v-for="s in stacks" :class="s.type + (s.circle.active ? ' active' : '')" v-on:mouseenter="hoverStart(s.circle)" v-on:mouseleave="hoverEnd">
 				<path class="circle-stack-line" :d="s.path" />
 				<circle class="small" :cx="s.circle.x" :cy="s.circle.y" :r="s.circle.r" />
 			</g>
@@ -26,14 +26,19 @@
 			<g transform="translate(100, 0)">
 				<g v-for="s in stacks" class="stack">
 					<!-- s.description as hover text -->
-					<rect :x="s.x" :y="s.y" :width="s.width" :height="s.height"></rect>
+					<rect :x="s.x" :y="s.y" :width="s.width" :height="s.height"
+						:class="s.active ? 'active' : ''" v-on:mouseenter="hoverStart(s)" v-on:mouseleave="hoverEnd" />
 					<text :x="s.x + s.width / 2" :y="s.y + s.height / 2" v-text="s.display"></text>
 
 					<!-- TODO children-container positioning -->
 					<rect class="children-container" :x="stackChildrenLeft" :y="s.y" :width="100 - stackChildrenLeft" :height="s.height"></rect>
-					<g v-for="c in s.children" class="child">
+
+					<g v-for="c in s.children" :class="c.type + ' child' + (c.active ? ' active' : '')" v-on:mouseenter="hoverStart(c)" v-on:mouseleave="hoverEnd">
 						<rect :x="c.x" :y="c.y" :width="c.width" :height="c.height"></rect>
-						<a :href="c.link"><text :x="c.x + c.width / 2" :y="c.y + c.height / 2" v-text="c.display"></text></a>
+
+						<!-- HACK duplicate -->
+						<a v-if="c.link" :href="c.link"><text :x="c.x + c.width / 2" :y="c.y + c.height / 2" v-text="c.display"></text></a>
+						<text v-if="!c.link" :x="c.x + c.width / 2" :y="c.y + c.height / 2" v-text="c.display"></text>
 					</g>
 				 </g>
 			</g>
