@@ -1,10 +1,23 @@
-body {
-	font-family: Verdana, sans-serif;
-}
-
 :root {
 	--color-bg: white;
 	--color-lines: black;
+	--color-bg-image: #abced488;
+
+	--border-width: 0.1px;
+	--path-width: 0.2px;
+	--border-width-active: 0.3px;
+}
+
+body {
+	font-family: Verdana, sans-serif;
+
+	background-color: var(--color-bg);
+	background-size: 6vmin 6vmin;
+	background-position: 8px 20px;
+	background-repeat: repeat;
+	background-image:
+		linear-gradient(to right, transparent 0px, var(--color-bg-image) 0px, var(--color-bg-image) 1px, transparent 1px),
+		linear-gradient(to bottom, transparent 0px, var(--color-bg-image) 0px, var(--color-bg-image) 1px, transparent 1px);
 }
 
 svg {
@@ -14,31 +27,38 @@ svg {
 	width: 100vw;
 	height: 100vh;
 
-	background-color: var(--color-bg);
+	font-size: 1.6px;
 }
 
 .center circle {
 	fill: var(--color-bg); /* TODO color */
-	stroke: var(--color-lines); /* TODO color */
-	stroke-width: 1;
+	stroke: var(--color-lines);
+	stroke-width: var(--border-width-active); /* TODO size */
 }
 
 path.circle-stack-line,
 circle.small {
 	fill: var(--color-bg); /* TODO color */
-	stroke: var(--color-lines); /* TODO color */
-	stroke-width: 0.5;
+	stroke: var(--color-lines);
+	stroke-width: var(--path-width);
 }
 path.circle-stack-line {
-	fill: none;
+	fill: transparent;
+}
+.active path.circle-stack-line,
+.active circle.small {
+	stroke-width: var(--border-width-active);
 }
 
 g.stack > rect,
 g.stack .children-container {
 	fill: var(--color-bg); /* TODO color */
-	stroke: var(--color-lines); /* TODO color */
-	stroke-width: 0.5px; /* TODO size */
+	stroke: var(--color-lines);
+	stroke-width: var(--border-width);
 	rx: 3px; /* TODO change style, this is just temp for now */
+}
+g.stack > rect.active {
+	stroke-width: var(--border-width-active);
 }
 
 text {
@@ -50,35 +70,61 @@ a:hover {
 	text-decoration: underline;
 }
 
+g.child > rect {
+	fill: var(--color-bg); /* TODO color */
+	stroke: var(--color-lines);
+	stroke-width: var(--border-width);
+	rx: 1px; /* TODO change style, this is just temp for now */
+}
+g.child.active > rect {
+	stroke-width: var(--border-width-active);
+	/* TODO dropshadow */
+	/* box-shadow: 0px 2px 1px -1px rgba(0,0,0,0.2),0px 1px 1px 0px rgba(0,0,0,0.14),0px 1px 3px 0px rgba(0,0,0,0.12); */
+}
+g.child.library > rect {
+	fill: hsla(200, 100%, 50%, 0.1); /* TODO color */
+}
+g.child.spec > rect {
+	fill: hsla(160, 100%, 50%, 0.1); /* TODO color */
+}
+g.child.standard > rect {
+	fill: hsla(320, 100%, 50%, 0.1); /* TODO color */
+}
+
 g.stack > text {
-	font-size: 3px; /* TODO size */
+	font-size: 2em;
 }
 g.child > text,
 g.child > a > text {
-	font-size: 2px; /* TODO size */
+	font-size: 1em;
+}
+g.child.active > * {
+	transform: scale(1.125);
+	transform-origin: 7.5px 1.5px; /* HACK this numbers are defined in js */
 }
 g.child > text {
 	font-style: italic;
 	opacity: 0.85;
 }
 .center text {
-	font-size: 10px; /* TODO size */
+	font-size: 6em;
 }
 
-g.child > rect {
+
+.tooltip text {
+	width: 40ch;
+	font-size: 1em;
+}
+.tooltip text tspan {
+	text-anchor: start; /* left-justified */
+	alignment-baseline: hanging; /* top-justified */
+}
+.tooltip rect {
+	width: 40ch;
+	height: 5.5em;
+
 	fill: var(--color-bg); /* TODO color */
-	stroke: red;
-	stroke-width: 0.5px; /* TODO size */
-	rx: 1px; /* TODO change style, this is just temp for now */
-}
-
-g.child.library > rect {
-	stroke: blue; /* TODO color */
-}
-
-g.stack > rect.active,
-g.child.active > rect,
-.active path.circle-stack-line,
-.active circle.small {
-	stroke-width: 1px; /* TODO size */
+	stroke: var(--color-lines);
+	stroke-width: var(--border-width);
+	rx: 0.5em; /* TODO change style, this is just temp for now */
 }
