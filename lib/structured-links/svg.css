@@ -93,6 +93,7 @@ g.child.standard > rect {
 
 g.stack > text {
 	font-size: 2em;
+	pointer-events: none;
 }
 g.child > text,
 g.child > a > text {
