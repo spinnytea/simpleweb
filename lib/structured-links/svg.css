@@ -11,7 +11,7 @@
 body {
 	font-family: Verdana, sans-serif;
 
-	background-color: #fff;
+	background-color: var(--color-bg);
 	background-size: 6vmin 6vmin;
 	background-position: 8px 20px;
 	background-repeat: repeat;
@@ -26,6 +26,8 @@ svg {
 	left: 0;
 	width: 100vw;
 	height: 100vh;
+
+	font-size: 1.6px;
 }
 
 .center circle {
@@ -41,7 +43,7 @@ circle.small {
 	stroke-width: var(--path-width);
 }
 path.circle-stack-line {
-	fill: none;
+	fill: transparent;
 }
 .active path.circle-stack-line,
 .active circle.small {
@@ -90,11 +92,11 @@ g.child.standard > rect {
 }
 
 g.stack > text {
-	font-size: 3px; /* TODO size */
+	font-size: 2em;
 }
 g.child > text,
 g.child > a > text {
-	font-size: 1.6px; /* TODO size */
+	font-size: 1em;
 }
 g.child.active > * {
 	transform: scale(1.125);
@@ -105,5 +107,24 @@ g.child > text {
 	opacity: 0.85;
 }
 .center text {
-	font-size: 10px; /* TODO size */
+	font-size: 6em;
+}
+
+
+.tooltip text {
+	width: 40ch;
+	font-size: 1em;
+}
+.tooltip text tspan {
+	text-anchor: start; /* left-justified */
+	alignment-baseline: hanging; /* top-justified */
+}
+.tooltip rect {
+	width: 40ch;
+	height: 5.5em;
+
+	fill: var(--color-bg); /* TODO color */
+	stroke: var(--color-lines);
+	stroke-width: var(--border-width);
+	rx: 0.5em; /* TODO change style, this is just temp for now */
 }
