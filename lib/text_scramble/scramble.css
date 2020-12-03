@@ -1,0 +1,34 @@
+html, body {
+	font-family: monospace;
+	background: #212121;
+}
+
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 3em 0;
+}
+
+.text {
+	font-weight: 100;
+	font-size: 2em;
+	color: #fafafa
+}
+.dud {
+	color: #757575;
+}
+
+#links a {
+	color: #fff;
+	display: block;
+	font-family: sans-serif;
+	font-weight: bold;
+	line-height: 1.5em;
+}
+#links a:hover {
+	color: #ccc;
+}
+#links a:active {
+	color: #ddd;
+}
