@@ -1,0 +1,27 @@
+canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+
+	background-color: black;
+}
+
+#links {
+	position: absolute;
+	top: 1em;
+	left: 1em;
+}
+
+#links a {
+	color: #fff;
+	display: block;
+	font-family: sans-serif;
+	font-weight: bold;
+	line-height: 1.5em;
+}
+#links a:hover {
+	color: #ccc;
+}
+#links a:active {
+	color: #ddd;
+}
